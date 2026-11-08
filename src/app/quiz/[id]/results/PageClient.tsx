@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { CheckCircle2, XCircle, RotateCcw, ArrowRight, Award } from 'lucide-react';
 
-// Mock contexts and data for completeness
 interface Question {
   id: string;
   text: string;
@@ -29,7 +30,7 @@ const mockQuiz: Quiz = {
 };
 
 const mockResult = {
-  selectedAnswers: [2, 1, 0], // q1 correct, q2 wrong (chose 1 instead of 0), q3 correct
+  selectedAnswers: [2, 1, 0],
   flaggedQuestions: [1]
 };
 
@@ -46,9 +47,9 @@ export default function QuizResultsPage() {
   const { getQuiz, quizResults } = useApp();
   
   const quiz = getQuiz(id);
-  const result = quizResults[id] || mockResult; // fallback to mockResult for demo
+  const result = quizResults[id] || mockResult;
 
-  if (!quiz || !result) return <div className="p-8 text-center">Result not found.</div>;
+  if (!quiz || !result) return <div className="min-h-screen bg-[#081726] text-white p-8">Result not found.</div>;
 
   let correctCount = 0;
   quiz.questions.forEach((q, idx) => {
@@ -61,110 +62,91 @@ export default function QuizResultsPage() {
   const percentage = Math.round((correctCount / total) * 100);
   const isPass = percentage >= 70;
 
-  const scoreColor = percentage >= 70 ? 'text-green-600' : percentage >= 50 ? 'text-amber-500' : 'text-red-600';
-  const scoreBg = percentage >= 70 ? 'bg-green-50 border-green-200' : percentage >= 50 ? 'bg-amber-50 border-amber-200' : 'bg-red-50 border-red-200';
-
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <main className="flex-1 max-w-4xl w-full mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#081726] text-white flex flex-col font-sans">
+      <main className="flex-1 max-w-3xl w-full mx-auto py-12 px-4 sm:px-6">
         
         {/* Score Card */}
-        <div className={`rounded-2xl border ${scoreBg} p-8 text-center shadow-sm mb-8`}>
-          <div className="text-4xl mb-2">🎉</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Quiz Complete!</h1>
-          <div className={`text-6xl font-extrabold ${scoreColor} mb-2`}>
+        <div className="rounded-3xl border border-[#102C40] bg-[#0D2232] p-8 text-center shadow-2xl mb-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-[#D8FF00]/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+          
+          <div className="w-16 h-16 mx-auto mb-4 bg-[#D8FF00]/15 text-[#D8FF00] rounded-2xl flex items-center justify-center">
+            <Award className="w-8 h-8" />
+          </div>
+          
+          <h1 className="text-2xl font-bold text-white mb-2">Quiz Complete!</h1>
+          <p className="text-xs text-white/60 mb-6">{quiz.title}</p>
+
+          <div className="text-6xl font-black text-[#D8FF00] mb-2 tracking-tight drop-shadow-[0_0_20px_rgba(216,255,0,0.4)]">
             {correctCount}/{total}
           </div>
-          <p className="text-xl text-gray-700 font-medium mb-4">{percentage}%</p>
-          <div className={`inline-block px-4 py-1 rounded-full font-semibold text-sm ${isPass ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
-            {isPass ? 'PASS' : 'FAIL'}
+          <p className="text-xl text-white/90 font-semibold mb-4">{percentage}%</p>
+
+          <div className={`inline-block px-4 py-1.5 rounded-full font-bold text-xs ${
+            isPass ? 'bg-[#D8FF00]/20 text-[#D8FF00] border border-[#D8FF00]/40' : 'bg-red-500/20 text-red-400 border border-red-500/40'
+          }`}>
+            {isPass ? 'PASSED' : 'NEEDS PRACTICE'}
+          </div>
+
+          <div className="mt-8 flex justify-center gap-4">
+            <button
+              onClick={() => router.push(`/quiz/${id}`)}
+              className="px-5 py-2.5 rounded-xl border border-[#102C40] text-xs font-semibold text-white/80 hover:bg-white/5 flex items-center gap-2 transition-colors"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Retake Quiz
+            </button>
+            <Link
+              href="/my-learning"
+              className="px-6 py-2.5 rounded-xl bg-[#D8FF00] text-black text-xs font-semibold hover:bg-[#cbf200] flex items-center gap-2 shadow-[0_0_20px_rgba(216,255,0,0.3)] transition-colors"
+            >
+              Back to Learning
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-            <p className="text-sm text-gray-500 mb-1">Correct</p>
-            <p className="text-2xl font-bold text-green-600">{correctCount}</p>
-          </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-            <p className="text-sm text-gray-500 mb-1">Incorrect</p>
-            <p className="text-2xl font-bold text-red-600">{total - correctCount}</p>
-          </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-            <p className="text-sm text-gray-500 mb-1">Flagged</p>
-            <p className="text-2xl font-bold text-amber-500">{result.flaggedQuestions.length}</p>
-          </div>
-          <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-            <p className="text-sm text-gray-500 mb-1">Time Taken</p>
-            <p className="text-2xl font-bold text-gray-900">--</p>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-          <button 
-            onClick={() => router.push('/courses')}
-            className="px-6 py-3 bg-white border border-gray-300 rounded-md shadow-sm text-base font-medium text-gray-700 hover:bg-gray-50"
-          >
-            Return to Courses
-          </button>
-          <button 
-            onClick={() => router.push(`/quiz/${id}`)}
-            className="px-6 py-3 bg-indigo-600 border border-transparent rounded-md shadow-sm text-base font-medium text-white hover:bg-indigo-700"
-          >
-            Try Again
-          </button>
-        </div>
-
-        {/* Question Review */}
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Question Review</h2>
-        <div className="space-y-6">
+        {/* Detailed Breakdown */}
+        <h2 className="text-lg font-bold text-white mb-4">Question Breakdown</h2>
+        <div className="space-y-4">
           {quiz.questions.map((q, idx) => {
-            const userAnswer = result.selectedAnswers[idx];
-            const isCorrect = userAnswer === q.correctIndex;
-
+            const chosen = result.selectedAnswers[idx];
+            const isCorrect = chosen === q.correctIndex;
             return (
-              <div key={q.id} className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-                <div className="p-5 border-b border-gray-100">
-                  <div className="flex items-start justify-between">
-                    <h3 className="text-lg font-medium text-gray-900">
-                      <span className="text-gray-500 mr-2">{idx + 1}.</span>
-                      {q.text}
-                    </h3>
-                    <span className={`shrink-0 ml-4 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                      {isCorrect ? 'Correct' : 'Incorrect'}
+              <div key={q.id} className="bg-[#0D2232] rounded-2xl border border-[#102C40] p-6 space-y-3">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="font-semibold text-sm text-white">{idx + 1}. {q.text}</h3>
+                  {isCorrect ? (
+                    <span className="flex items-center gap-1 text-xs text-[#D8FF00] font-semibold shrink-0">
+                      <CheckCircle2 className="w-4 h-4" /> Correct
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 text-xs text-red-400 font-semibold shrink-0">
+                      <XCircle className="w-4 h-4" /> Incorrect
+                    </span>
+                  )}
+                </div>
+
+                <div className="text-xs space-y-1.5 pt-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-white/40">Your answer:</span>
+                    <span className={isCorrect ? 'text-[#D8FF00] font-medium' : 'text-red-400 font-medium'}>
+                      {chosen !== -1 ? q.options[chosen] : 'No answer'}
                     </span>
                   </div>
+                  {!isCorrect && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/40">Correct answer:</span>
+                      <span className="text-[#D8FF00] font-medium">{q.options[q.correctIndex]}</span>
+                    </div>
+                  )}
                 </div>
-                
-                <div className="p-5 bg-gray-50 space-y-3">
-                  {q.options.map((opt, optIdx) => {
-                    const isUserChoice = userAnswer === optIdx;
-                    const isRightAnswer = q.correctIndex === optIdx;
-                    
-                    let highlightClass = 'border-gray-200 bg-white text-gray-700';
-                    if (isRightAnswer) highlightClass = 'border-green-500 bg-green-50 text-green-900 font-medium';
-                    else if (isUserChoice && !isCorrect) highlightClass = 'border-red-500 bg-red-50 text-red-900';
 
-                    return (
-                      <div key={optIdx} className={`p-3 rounded-md border ${highlightClass} flex items-center`}>
-                        <div className="w-5 h-5 rounded-full flex items-center justify-center mr-3 shrink-0">
-                          {isRightAnswer && <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>}
-                          {isUserChoice && !isCorrect && <svg className="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>}
-                          {!isRightAnswer && !isUserChoice && <div className="w-4 h-4 rounded-full border-2 border-gray-300" />}
-                        </div>
-                        {opt}
-                        {isUserChoice && <span className="ml-auto text-xs font-semibold uppercase tracking-wider text-gray-500">Your Answer</span>}
-                      </div>
-                    );
-                  })}
-                </div>
-                
-                <div className="p-5 border-t border-gray-100 bg-blue-50">
-                  <h4 className="text-sm font-semibold text-blue-900 mb-1">Explanation</h4>
-                  <p className="text-sm text-blue-800">{q.explanation}</p>
-                </div>
+                {q.explanation && (
+                  <p className="mt-3 p-3 bg-[#0A1926] rounded-xl text-xs text-white/60 border border-[#102C40]">
+                    💡 {q.explanation}
+                  </p>
+                )}
               </div>
             );
           })}
@@ -173,4 +155,3 @@ export default function QuizResultsPage() {
     </div>
   );
 }
-

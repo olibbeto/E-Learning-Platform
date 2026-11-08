@@ -56,50 +56,50 @@ export function CourseSidebar({
 
   const getStatusIcon = (lesson: Lesson) => {
     if (lesson.completed) {
-      return <CheckCircle2 className="w-5 h-5 text-green-500" />;
+      return <CheckCircle2 className="w-5 h-5 text-[#D8FF00]" />;
     }
     if (lesson.id === currentLessonId) {
-      return <ArrowRightCircle className="w-5 h-5 text-indigo-600" />;
+      return <ArrowRightCircle className="w-5 h-5 text-[#D8FF00]" />;
     }
-    return <Circle className="w-5 h-5 text-slate-300" />;
+    return <Circle className="w-5 h-5 text-white/30" />;
   };
 
   const SidebarContent = (
-    <div className="h-full flex flex-col bg-white border-r border-slate-200 w-80 shadow-sm">
-      <div className="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-        <h2 className="font-semibold text-slate-800 line-clamp-2">{course.title}</h2>
+    <div className="h-full flex flex-col bg-[#0A1926] border-r border-[#102C40] w-80 shadow-2xl text-white">
+      <div className="p-4 border-b border-[#102C40] flex justify-between items-center bg-[#0D2232]/80 backdrop-blur-md">
+        <h2 className="font-semibold text-white line-clamp-2 text-sm">{course.title}</h2>
         {onClose && (
-          <button onClick={onClose} className="md:hidden p-1 text-slate-500 hover:bg-slate-200 rounded-md">
+          <button onClick={onClose} className="md:hidden p-1 text-white/60 hover:text-white hover:bg-white/10 rounded-md">
             <X className="w-5 h-5" />
           </button>
         )}
       </div>
       <div className="flex-1 overflow-y-auto p-2 space-y-2">
         {course.modules.map((module) => (
-          <div key={module.id} className="border border-slate-200 rounded-lg overflow-hidden bg-white">
+          <div key={module.id} className="border border-[#102C40] rounded-xl overflow-hidden bg-[#0D2232]/50">
             <button
               onClick={() => toggleModule(module.id)}
-              className="w-full flex items-center justify-between p-3 bg-slate-50 hover:bg-slate-100 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-[#0D2232] hover:bg-[#102C40] transition-colors"
             >
               <div className="flex items-center gap-2 text-left">
-                <span className="font-medium text-slate-800">{module.title}</span>
+                <span className="font-medium text-xs text-white/90">{module.title}</span>
               </div>
               {expandedModules[module.id] ? (
-                <ChevronDown className="w-4 h-4 text-slate-500" />
+                <ChevronDown className="w-4 h-4 text-white/60" />
               ) : (
-                <ChevronRight className="w-4 h-4 text-slate-500" />
+                <ChevronRight className="w-4 h-4 text-white/60" />
               )}
             </button>
             
             {expandedModules[module.id] && (
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-[#102C40]/50">
                 {module.lessons.map((lesson) => (
                   <button
                     key={lesson.id}
                     onClick={() => onLessonSelect(module.id, lesson.id)}
                     className={cn(
-                      "w-full flex items-start gap-3 p-3 text-left transition-colors hover:bg-slate-50",
-                      currentLessonId === lesson.id ? "bg-indigo-50/50" : ""
+                      "w-full flex items-start gap-3 p-3 text-left transition-colors hover:bg-white/5",
+                      currentLessonId === lesson.id ? "bg-[#D8FF00]/10 border-l-2 border-[#D8FF00]" : ""
                     )}
                   >
                     <div className="mt-0.5 shrink-0">
@@ -107,12 +107,12 @@ export function CourseSidebar({
                     </div>
                     <div className="flex-1">
                       <div className={cn(
-                        "text-sm font-medium",
-                        currentLessonId === lesson.id ? "text-indigo-700" : "text-slate-700"
+                        "text-xs font-medium",
+                        currentLessonId === lesson.id ? "text-[#D8FF00] font-semibold" : "text-white/80"
                       )}>
                         {lesson.title}
                       </div>
-                      <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500">
+                      <div className="flex items-center gap-1.5 mt-1 text-[11px] text-white/40">
                         {getLessonIcon(lesson.type)}
                         <span className="capitalize">{lesson.type}</span>
                         {lesson.duration && (
@@ -143,8 +143,8 @@ export function CourseSidebar({
       {/* Mobile Drawer */}
       {isOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
-          <div className="fixed inset-0 bg-black/50" onClick={onClose} />
-          <div className="relative flex-1 flex max-w-xs w-full bg-white transition-transform duration-300 transform translate-x-0">
+          <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+          <div className="relative flex-1 flex max-w-xs w-full bg-[#0A1926] transition-transform duration-300 transform translate-x-0">
             {SidebarContent}
           </div>
         </div>

@@ -6,6 +6,7 @@ import { withBasePath } from '@/lib/basePath';
 import {
   BookOpen, Award, Clock, ChevronRight,
   CalendarDays, AlertCircle, CheckCircle2, SortAsc,
+  Play,
 } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { useApp } from '@/context/AppContext';
@@ -44,7 +45,7 @@ function CourseImageWithFallback({
   return (
     <div
       className={`relative w-full h-full flex items-center justify-center overflow-hidden ${
-        !showImage ? colorClass : ''
+        !showImage ? colorClass || 'bg-[#102C40]' : ''
       }`}
     >
       {showImage ? (
@@ -53,10 +54,10 @@ function CourseImageWithFallback({
           alt={alt}
           loading="lazy"
           onError={() => setImgError(true)}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
-        <BookOpen className="w-14 h-14 text-white/40" aria-hidden="true" />
+        <BookOpen className="w-14 h-14 text-white/30" aria-hidden="true" />
       )}
     </div>
   );
@@ -66,15 +67,15 @@ function CourseImageWithFallback({
 function SkeletonCard() {
   return (
     <div
-      className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col sm:flex-row animate-pulse"
+      className="bg-[#0D2232] rounded-2xl border border-white/10 overflow-hidden flex flex-col sm:flex-row animate-pulse"
       aria-hidden="true"
     >
-      <div className="sm:w-56 h-40 sm:h-auto bg-gray-200 shrink-0" />
+      <div className="sm:w-56 h-40 sm:h-auto bg-[#102C40] shrink-0" />
       <div className="p-6 flex-1 space-y-3">
-        <div className="h-5 bg-gray-200 rounded w-3/4" />
-        <div className="h-4 bg-gray-100 rounded w-1/2" />
-        <div className="h-3 bg-gray-100 rounded w-full mt-6" />
-        <div className="h-10 bg-gray-200 rounded w-36 ml-auto" />
+        <div className="h-5 bg-white/10 rounded w-3/4" />
+        <div className="h-4 bg-white/5 rounded w-1/2" />
+        <div className="h-3 bg-white/5 rounded w-full mt-6" />
+        <div className="h-10 bg-[#D8FF00]/20 rounded-full w-36 ml-auto" />
       </div>
     </div>
   );
@@ -88,7 +89,7 @@ export default function MyLearningPage() {
   const [sortBy, setSortBy] = useState<'recent' | 'progress-desc' | 'title-asc'>('recent');
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Simulate brief load state for graceful mount
+  // Brief load state for graceful mount
   useEffect(() => {
     const t = setTimeout(() => setIsLoaded(true), 300);
     return () => clearTimeout(t);
@@ -105,7 +106,7 @@ export default function MyLearningPage() {
     return Math.round(sum / grades.length);
   }, [grades]);
 
-  // ── Upcoming deadlines (not_submitted with future due date) ───────────────
+  // ── Upcoming deadlines ────────────────────────────────────────────────────
   const now = new Date();
   const upcomingDeadlines = useMemo(
     () =>
@@ -142,7 +143,6 @@ export default function MyLearningPage() {
     Completed: completedCourses.length,
   };
 
-  // ─── Days until due ───────────────────────────────────────────────────────
   function daysUntil(dateStr: string) {
     const diff = Math.ceil((new Date(dateStr).getTime() - now.getTime()) / 86400000);
     if (diff === 0) return 'Due today';
@@ -151,46 +151,60 @@ export default function MyLearningPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Skip to content — Phase 4a */}
+    <div className="min-h-screen bg-[#081726] text-white flex flex-col font-sans selection:bg-[#D8FF00] selection:text-black">
+      {/* Skip to content */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-indigo-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:text-sm focus:font-medium"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-[#D8FF00] focus:text-black focus:px-4 focus:py-2 focus:rounded-full focus:text-sm focus:font-bold"
       >
         Skip to content
       </a>
 
       <Navbar />
 
-      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main id="main-content" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full">
 
         {/* ── Page heading ─────────────────────────────────────────────── */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">My Learning</h1>
+        <div className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            My <span className="text-[#D8FF00]">Learning</span>
+          </h1>
+          <p className="text-white/60 mt-1.5 text-sm sm:text-base">
+            Track your progress, continue courses, and manage your upcoming assignments.
+          </p>
+        </div>
 
         {/* ── Stats grid ───────────────────────────────────────────────── */}
-        <section aria-labelledby="stats-heading" className="mb-8">
+        <section aria-labelledby="stats-heading" className="mb-10">
           <h2 id="stats-heading" className="sr-only">Learning Summary</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-              <p className="text-sm font-medium text-gray-600">Total Enrolled</p>
-              <p className="text-2xl font-bold text-gray-900 mt-1">{totalEnrolled}</p>
+            
+            <div className="bg-[#0D2232] p-5 rounded-2xl border border-white/10 shadow-lg">
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/50">Total Enrolled</p>
+              <p className="text-3xl font-black text-white mt-2">{totalEnrolled}</p>
             </div>
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-              <p className="text-sm font-medium text-gray-600">In Progress</p>
-              <p className="text-2xl font-bold text-blue-600 mt-1">{inProgressCourses.length}</p>
+            
+            <div className="bg-[#0D2232] p-5 rounded-2xl border border-white/10 shadow-lg">
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/50">In Progress</p>
+              <p className="text-3xl font-black text-[#D8FF00] mt-2">{inProgressCourses.length}</p>
             </div>
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-              <p className="text-sm font-medium text-gray-600">Completed</p>
-              <p className="text-2xl font-bold text-green-600 mt-1">{completedCourses.length}</p>
+            
+            <div className="bg-[#0D2232] p-5 rounded-2xl border border-white/10 shadow-lg">
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/50">Completed</p>
+              <p className="text-3xl font-black text-emerald-400 mt-2">{completedCourses.length}</p>
             </div>
-            <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-              <p className="text-sm font-medium text-gray-600">Average Grade</p>
-              <p className="text-2xl font-bold text-purple-600 mt-1">
-                {avgGrade !== null ? `${avgGrade}%` : (
-                  <span className="text-gray-400 text-base font-medium">No grades yet</span>
+            
+            <div className="bg-[#0D2232] p-5 rounded-2xl border border-white/10 shadow-lg">
+              <p className="text-xs font-semibold uppercase tracking-wider text-white/50">Average Grade</p>
+              <p className="text-3xl font-black text-white mt-2">
+                {avgGrade !== null ? (
+                  <span className="text-[#D8FF00]">{avgGrade}%</span>
+                ) : (
+                  <span className="text-white/40 text-base font-medium">No grades yet</span>
                 )}
               </p>
             </div>
+
           </div>
         </section>
 
@@ -201,11 +215,12 @@ export default function MyLearningPage() {
 
             {/* Tabs + Sort row */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+              
               {/* Tabs */}
               <div
                 role="tablist"
                 aria-label="Filter courses"
-                className="flex border-b border-gray-200 -mb-px"
+                className="flex gap-2"
               >
                 {(['All', 'In Progress', 'Completed'] as const).map((tab) => (
                   <button
@@ -215,15 +230,15 @@ export default function MyLearningPage() {
                     aria-controls={`tabpanel-${tab.replace(' ', '-')}`}
                     id={`tab-${tab.replace(' ', '-')}`}
                     onClick={() => setActiveTab(tab)}
-                    className={`whitespace-nowrap py-3 px-3 border-b-2 text-sm font-medium min-h-[44px] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 ${
+                    className={`whitespace-nowrap py-2 px-4 rounded-full text-xs font-bold transition-all min-h-[38px] ${
                       activeTab === tab
-                        ? 'border-indigo-600 text-indigo-600'
-                        : 'border-transparent text-gray-600 hover:text-gray-800 hover:border-gray-300'
+                        ? 'bg-[#D8FF00] text-black shadow-[0_0_15px_rgba(216,255,0,0.3)]'
+                        : 'bg-[#0D2232] text-white/70 hover:text-white hover:bg-[#122e44] border border-white/10'
                     }`}
                   >
                     {tab}
-                    <span className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${
-                      activeTab === tab ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'
+                    <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded-full ${
+                      activeTab === tab ? 'bg-black/20 text-black' : 'bg-white/10 text-white/70'
                     }`}>
                       {tabCounts[tab]}
                     </span>
@@ -232,13 +247,13 @@ export default function MyLearningPage() {
               </div>
 
               {/* Sort */}
-              <label className="flex items-center gap-2 text-sm text-gray-600 shrink-0">
-                <SortAsc className="w-4 h-4" aria-hidden="true" />
+              <label className="flex items-center gap-2 text-xs text-white/60 shrink-0">
+                <SortAsc className="w-4 h-4 text-[#D8FF00]" aria-hidden="true" />
                 <span className="sr-only sm:not-sr-only">Sort by:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
-                  className="border border-gray-200 rounded-lg px-2 py-1.5 text-sm text-gray-700 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none min-h-[44px]"
+                  className="bg-[#0D2232] border border-white/10 rounded-full px-3 py-1.5 text-xs text-white/90 font-medium focus:outline-none focus:border-[#D8FF00]"
                   aria-label="Sort courses"
                 >
                   <option value="recent">Recently Accessed</option>
@@ -277,9 +292,10 @@ export default function MyLearningPage() {
 
                     return (
                       <li key={course.id}>
-                        <article className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col sm:flex-row">
+                        <article className="bg-[#0D2232] hover:bg-[#112d42] rounded-2xl border border-white/10 hover:border-[#D8FF00]/40 overflow-hidden shadow-lg transition-all duration-300 flex flex-col sm:flex-row group">
+                          
                           {/* Thumbnail */}
-                          <div className="sm:w-56 h-40 sm:h-auto shrink-0" style={{ aspectRatio: '3/2' }}>
+                          <div className="sm:w-60 h-44 sm:h-auto shrink-0 relative overflow-hidden" style={{ aspectRatio: '3/2' }}>
                             <CourseImageWithFallback
                               src={course.image}
                               alt={
@@ -293,42 +309,48 @@ export default function MyLearningPage() {
                               }
                               colorClass={course.color}
                             />
+                            <span className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-semibold text-white/90 border border-white/10">
+                              {course.category}
+                            </span>
                           </div>
 
                           {/* Content */}
-                          <div className="p-5 flex-1 flex flex-col">
-                            <div className="flex justify-between items-start gap-4 mb-1">
-                              <div>
-                                <h3 className="text-lg font-semibold text-gray-900 leading-snug">
-                                  {course.title}
-                                </h3>
-                                <p className="text-sm text-gray-600 mt-0.5">{instructorName}</p>
-                                {course.lastAccessed && (
-                                  <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
-                                    <Clock className="w-3 h-3" aria-hidden="true" />
-                                    Last accessed: {formatShortDate(course.lastAccessed)}
-                                  </p>
+                          <div className="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                              <div className="flex justify-between items-start gap-4 mb-2">
+                                <div>
+                                  <h3 className="text-lg font-bold text-white group-hover:text-[#D8FF00] transition-colors leading-snug">
+                                    {course.title}
+                                  </h3>
+                                  <p className="text-xs text-white/60 mt-1">{instructorName}</p>
+                                </div>
+                                {isDone && (
+                                  <span className="flex items-center gap-1 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 px-2.5 py-1 rounded-full text-xs font-bold shrink-0">
+                                    <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
+                                    Completed
+                                  </span>
                                 )}
                               </div>
-                              {isDone && (
-                                <span className="flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0">
-                                  <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
-                                  Completed
-                                </span>
+
+                              {course.lastAccessed && (
+                                <p className="text-xs text-white/40 flex items-center gap-1.5 mb-4">
+                                  <Clock className="w-3.5 h-3.5 text-[#D8FF00]" aria-hidden="true" />
+                                  Last accessed: {formatShortDate(course.lastAccessed)}
+                                </p>
                               )}
                             </div>
 
-                            <div className="mt-auto pt-4 space-y-3">
-                              {/* Progress */}
+                            <div className="pt-4 border-t border-white/10 space-y-3">
+                              {/* Progress bar */}
                               <div>
-                                <div className="flex justify-between text-sm font-medium text-gray-700 mb-1.5">
-                                  <span>{pct}% complete</span>
-                                  <span className="text-gray-600 font-normal">
+                                <div className="flex justify-between text-xs font-semibold mb-1.5">
+                                  <span className="text-[#D8FF00]">{pct}% complete</span>
+                                  <span className="text-white/60 font-normal">
                                     {completed} of {total} lesson{total !== 1 ? 's' : ''} completed
                                   </span>
                                 </div>
                                 <div
-                                  className="w-full bg-gray-100 rounded-full h-2"
+                                  className="w-full bg-white/10 rounded-full h-2 overflow-hidden"
                                   role="progressbar"
                                   aria-valuenow={pct}
                                   aria-valuemin={0}
@@ -336,37 +358,31 @@ export default function MyLearningPage() {
                                   aria-label={`${course.title} progress: ${pct}%`}
                                 >
                                   <div
-                                    className={`h-2 rounded-full transition-all duration-500 ${
-                                      isDone ? 'bg-green-500' : 'bg-indigo-600'
-                                    }`}
+                                    className="h-2 rounded-full bg-[#D8FF00] shadow-[0_0_8px_#D8FF00] transition-all duration-500"
                                     style={{ width: `${pct}%` }}
                                   />
                                 </div>
                               </div>
 
-                              {/* Next lesson preview */}
-                              {nextLesson && !isDone && (
-                                <p className="text-xs text-gray-500">
-                                  <span className="font-medium text-gray-700">Up next:</span>{' '}
-                                  {nextLesson.title}
-                                </p>
-                              )}
+                              {/* Action row */}
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                                {nextLesson && !isDone ? (
+                                  <p className="text-xs text-white/60 truncate">
+                                    <span className="font-semibold text-white/90">Up next:</span>{' '}
+                                    {nextLesson.title}
+                                  </p>
+                                ) : <div />}
 
-                              {/* Action button */}
-                              <div className="flex justify-end">
                                 <Link
                                   href={`/learn/${course.id}/${continueId}`}
-                                  className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 ${
-                                    isDone
-                                      ? 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus-visible:ring-gray-400'
-                                      : 'bg-indigo-600 text-white hover:bg-indigo-700'
-                                  }`}
+                                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold bg-[#D8FF00] text-black hover:bg-[#cbf000] shadow-[0_0_15px_rgba(216,255,0,0.3)] transition-all min-h-[38px] shrink-0"
                                 >
-                                  {continueLabel}
-                                  {!isDone && <ChevronRight className="w-4 h-4" aria-hidden="true" />}
+                                  <span>{continueLabel}</span>
+                                  <ChevronRight className="w-4 h-4 text-black" aria-hidden="true" />
                                 </Link>
                               </div>
                             </div>
+
                           </div>
                         </article>
                       </li>
@@ -376,76 +392,63 @@ export default function MyLearningPage() {
               ) : (
                 /* Empty state */
                 <div
-                  className="bg-white rounded-xl border border-gray-200 py-20 px-4 text-center"
+                  className="bg-[#0D2232] rounded-2xl border border-white/10 py-16 px-4 text-center"
                   role="status"
                 >
-                  {activeTab === 'Completed' ? (
-                    <>
-                      <Award className="w-14 h-14 text-gray-300 mx-auto mb-4" aria-hidden="true" />
-                      <h3 className="text-lg font-semibold text-gray-900">No completed courses yet</h3>
-                      <p className="text-gray-600 mt-2 max-w-xs mx-auto">
-                        Keep going! Your completed courses will appear here.
-                      </p>
-                    </>
-                  ) : activeTab === 'In Progress' ? (
-                    <>
-                      <BookOpen className="w-14 h-14 text-gray-300 mx-auto mb-4" aria-hidden="true" />
-                      <h3 className="text-lg font-semibold text-gray-900">No courses in progress</h3>
-                      <p className="text-gray-600 mt-2">All your courses are completed — great work!</p>
-                    </>
-                  ) : (
-                    <>
-                      <BookOpen className="w-14 h-14 text-gray-300 mx-auto mb-4" aria-hidden="true" />
-                      <h3 className="text-lg font-semibold text-gray-900">No courses enrolled yet</h3>
-                      <p className="text-gray-600 mt-2">Explore the catalog to find your first course.</p>
-                      <Link
-                        href="/courses"
-                        className="mt-6 inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors min-h-[44px] leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-                      >
-                        Explore Courses
-                      </Link>
-                    </>
-                  )}
+                  <BookOpen className="w-14 h-14 text-white/20 mx-auto mb-4" aria-hidden="true" />
+                  <h3 className="text-lg font-bold text-white">No courses in this section</h3>
+                  <p className="text-white/50 text-sm mt-1 max-w-sm mx-auto">
+                    {activeTab === 'Completed'
+                      ? 'Keep working through your lessons! Completed courses will show here.'
+                      : 'Explore the courses catalog to start learning.'}
+                  </p>
+                  <Link
+                    href="/courses"
+                    className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#D8FF00] text-black font-bold rounded-full text-sm hover:bg-[#cbf000] shadow-[0_0_15px_rgba(216,255,0,0.3)] transition-all"
+                  >
+                    <span>Explore Courses</span>
+                    <ChevronRight className="w-4 h-4 text-black" />
+                  </Link>
                 </div>
               )}
             </div>
           </div>
 
           {/* ── Right: Upcoming Deadlines panel ────────────────────────── */}
-          <aside className="lg:w-72 shrink-0" aria-labelledby="deadlines-heading">
-            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 sticky top-24">
+          <aside className="lg:w-80 shrink-0" aria-labelledby="deadlines-heading">
+            <div className="bg-[#0D2232] rounded-2xl border border-white/10 shadow-xl p-5 sticky top-24 space-y-4">
               <h2
                 id="deadlines-heading"
-                className="text-base font-semibold text-gray-900 flex items-center gap-2 mb-4"
+                className="text-base font-bold text-white flex items-center gap-2"
               >
-                <CalendarDays className="w-4 h-4 text-indigo-600" aria-hidden="true" />
+                <CalendarDays className="w-4 h-4 text-[#D8FF00]" aria-hidden="true" />
                 Upcoming Deadlines
               </h2>
 
               {upcomingDeadlines.length === 0 ? (
                 <div className="text-center py-6">
-                  <CheckCircle2 className="w-10 h-10 text-green-400 mx-auto mb-2" aria-hidden="true" />
-                  <p className="text-sm text-gray-600 font-medium">You&apos;re all caught up! 🎉</p>
-                  <p className="text-xs text-gray-400 mt-1">No pending assignments right now.</p>
+                  <CheckCircle2 className="w-10 h-10 text-emerald-400 mx-auto mb-2" aria-hidden="true" />
+                  <p className="text-sm text-white/90 font-bold">You&apos;re all caught up! 🎉</p>
+                  <p className="text-xs text-white/50 mt-1">No pending assignments right now.</p>
                 </div>
               ) : (
-                <ul className="space-y-3">
+                <ul className="space-y-2.5">
                   {upcomingDeadlines.map((a) => (
                     <li key={a.id}>
                       <Link
                         href={`/assignments/${a.id}`}
-                        className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        className="flex items-start gap-3 p-3 rounded-xl bg-[#081726]/60 border border-white/5 hover:border-[#D8FF00]/40 transition-all group"
                       >
                         <AlertCircle
-                          className="w-4 h-4 text-amber-500 mt-0.5 shrink-0"
+                          className="w-4 h-4 text-[#D8FF00] mt-0.5 shrink-0"
                           aria-hidden="true"
                         />
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-gray-800 group-hover:text-indigo-600 truncate transition-colors">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-white group-hover:text-[#D8FF00] truncate transition-colors">
                             {a.title}
                           </p>
-                          <p className="text-xs text-gray-500 truncate">{a.courseName}</p>
-                          <p className="text-xs text-amber-600 font-medium mt-0.5">
+                          <p className="text-[11px] text-white/50 truncate mt-0.5">{a.courseName}</p>
+                          <p className="text-[11px] text-[#D8FF00] font-semibold mt-1">
                             {daysUntil(a.dueDate)}
                           </p>
                         </div>
@@ -455,16 +458,16 @@ export default function MyLearningPage() {
                 </ul>
               )}
 
-              <div className="mt-4 pt-4 border-t border-gray-100 flex gap-2">
+              <div className="pt-3 border-t border-white/10 flex gap-2">
                 <Link
                   href="/assignments"
-                  className="flex-1 text-center text-sm font-medium text-indigo-600 hover:text-indigo-700 py-2 rounded-lg hover:bg-indigo-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                  className="flex-1 text-center text-xs font-bold text-black bg-[#D8FF00] hover:bg-[#cbf000] py-2 rounded-full transition-all shadow-[0_0_10px_rgba(216,255,0,0.2)]"
                 >
-                  All Assignments
+                  Assignments
                 </Link>
                 <Link
                   href="/calendar"
-                  className="flex-1 text-center text-sm font-medium text-indigo-600 hover:text-indigo-700 py-2 rounded-lg hover:bg-indigo-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+                  className="flex-1 text-center text-xs font-semibold text-white bg-white/10 hover:bg-white/15 py-2 rounded-full transition-colors border border-white/10"
                 >
                   Calendar
                 </Link>

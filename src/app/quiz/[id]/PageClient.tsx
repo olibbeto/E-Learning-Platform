@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { ArrowLeft, Flag, CheckCircle2 } from 'lucide-react';
 
-// Mock contexts and data for completeness
 interface Question {
   id: string;
   text: string;
@@ -47,7 +47,7 @@ export default function QuizPage() {
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set());
   const [showModal, setShowModal] = useState(false);
 
-  if (!quiz) return <div>Quiz not found</div>;
+  if (!quiz) return <div className="min-h-screen bg-[#081726] text-white p-8">Quiz not found</div>;
 
   const currentQuestion = quiz.questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === quiz.questions.length - 1;
@@ -87,65 +87,67 @@ export default function QuizPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[#081726] text-white flex flex-col font-sans">
       {/* Top bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-        <button onClick={() => router.back()} className="text-gray-500 hover:text-gray-900 font-medium text-sm flex items-center">
-          <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+      <div className="bg-[#0A1926] border-b border-[#102C40] px-4 py-3.5 flex items-center justify-between sticky top-0 z-10 shadow-lg">
+        <button onClick={() => router.back()} className="text-white/60 hover:text-white font-medium text-xs flex items-center gap-1 transition-colors">
+          <ArrowLeft className="w-4 h-4" />
           Back
         </button>
-        <h1 className="text-lg font-bold text-gray-900 truncate mx-4">{quiz.title}</h1>
-        <div className="text-sm font-medium text-gray-500 shrink-0">
+        <h1 className="text-sm font-bold text-white truncate mx-4">{quiz.title}</h1>
+        <div className="text-xs font-mono text-[#D8FF00] shrink-0 bg-[#D8FF00]/10 px-2.5 py-1 rounded-full border border-[#D8FF00]/20">
           -- min remaining
         </div>
       </div>
 
       {/* Progress */}
-      <div className="w-full bg-gray-200 h-1">
+      <div className="w-full bg-white/10 h-1">
         <div 
-          className="bg-indigo-600 h-1 transition-all duration-300" 
+          className="bg-[#D8FF00] h-1 transition-all duration-300 shadow-[0_0_8px_rgba(216,255,0,0.6)]" 
           style={{ width: `${((currentQuestionIndex + 1) / quiz.questions.length) * 100}%` }}
         />
       </div>
 
       <main className="flex-1 max-w-3xl w-full mx-auto py-8 px-4 flex flex-col">
         <div className="flex justify-between items-center mb-6">
-          <span className="text-sm font-medium text-gray-500">Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
+          <span className="text-xs font-medium text-white/50">Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
           <button 
             onClick={toggleFlag}
-            className={`flex items-center text-sm font-medium ${flaggedQuestions.has(currentQuestionIndex) ? 'text-amber-600' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`flex items-center gap-1.5 text-xs font-medium transition-colors ${
+              flaggedQuestions.has(currentQuestionIndex) ? 'text-amber-400' : 'text-white/40 hover:text-white/70'
+            }`}
           >
-            <svg className="w-5 h-5 mr-1" fill={flaggedQuestions.has(currentQuestionIndex) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg>
+            <Flag className="w-3.5 h-3.5" fill={flaggedQuestions.has(currentQuestionIndex) ? 'currentColor' : 'none'} />
             {flaggedQuestions.has(currentQuestionIndex) ? 'Flagged' : 'Flag Question'}
           </button>
         </div>
 
         {/* Question Area */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8 flex-1">
-          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900 mb-8 leading-relaxed">
+        <div className="bg-[#0D2232] rounded-2xl border border-[#102C40] p-6 sm:p-8 flex-1 shadow-xl">
+          <h2 className="text-lg sm:text-xl font-bold text-white mb-6 leading-relaxed">
             {currentQuestion.text}
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {currentQuestion.options.map((opt, idx) => {
               const isSelected = selectedAnswers[currentQuestionIndex] === idx;
               return (
                 <button
                   key={idx}
                   onClick={() => handleOptionSelect(idx)}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                  className={`w-full text-left p-4 rounded-xl border transition-all ${
                     isSelected 
-                      ? 'border-indigo-600 bg-indigo-50' 
-                      : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
+                      ? 'border-[#D8FF00] bg-[#D8FF00]/10 shadow-[0_0_15px_rgba(216,255,0,0.15)]' 
+                      : 'border-[#102C40] bg-[#0A1926]/60 hover:border-white/20 hover:bg-[#0A1926]'
                   }`}
                 >
                   <div className="flex items-center">
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 shrink-0 ${
-                      isSelected ? 'border-indigo-600' : 'border-gray-300'
+                    <div className={`w-5 h-5 rounded-full border flex items-center justify-center mr-3 shrink-0 ${
+                      isSelected ? 'border-[#D8FF00] bg-[#D8FF00]' : 'border-white/30'
                     }`}>
-                      {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-indigo-600" />}
+                      {isSelected && <div className="w-2 h-2 rounded-full bg-black" />}
                     </div>
-                    <span className={`text-base ${isSelected ? 'text-indigo-900 font-medium' : 'text-gray-700'}`}>
+                    <span className={`text-sm ${isSelected ? 'text-white font-semibold' : 'text-white/80'}`}>
                       {opt}
                     </span>
                   </div>
@@ -160,7 +162,7 @@ export default function QuizPage() {
           <button 
             onClick={handlePrev} 
             disabled={currentQuestionIndex === 0}
-            className="px-6 py-2.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-5 py-2.5 border border-[#102C40] rounded-xl text-xs font-semibold text-white/70 bg-[#0D2232] hover:bg-[#102C40] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             Previous
           </button>
@@ -174,10 +176,10 @@ export default function QuizPage() {
                 <button
                   key={idx}
                   onClick={() => setCurrentQuestionIndex(idx)}
-                  className={`w-3 h-3 rounded-full ${
-                    isCurrent ? 'ring-2 ring-offset-2 ring-indigo-600 ' : ''
+                  className={`w-2.5 h-2.5 rounded-full transition-all ${
+                    isCurrent ? 'ring-2 ring-[#D8FF00] ring-offset-2 ring-offset-[#081726]' : ''
                   } ${
-                    isFlagged ? 'bg-amber-500' : isAnswered ? 'bg-indigo-600' : 'bg-gray-300'
+                    isFlagged ? 'bg-amber-400' : isAnswered ? 'bg-[#D8FF00]' : 'bg-white/20'
                   }`}
                   aria-label={`Go to question ${idx + 1}`}
                 />
@@ -187,7 +189,7 @@ export default function QuizPage() {
 
           <button 
             onClick={handleNext}
-            className="px-6 py-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
+            className="px-6 py-2.5 rounded-xl text-xs font-semibold text-black bg-[#D8FF00] hover:bg-[#cbf200] shadow-[0_0_20px_rgba(216,255,0,0.3)] transition-colors"
           >
             {isLastQuestion ? 'Submit Quiz' : 'Next'}
           </button>
@@ -196,30 +198,30 @@ export default function QuizPage() {
 
       {/* Submit Modal */}
       {showModal && (
-        <div className="fixed z-50 inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-            </div>
-            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <h3 className="text-lg leading-6 font-medium text-gray-900 mb-2">Submit Quiz?</h3>
-                <p className="text-sm text-gray-500 mb-4">
-                  You've answered {answeredCount} of {quiz.questions.length} questions. {flaggedQuestions.size > 0 && `${flaggedQuestions.size} flagged.`}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Are you sure you want to submit? You cannot change your answers after submission.
-                </p>
-              </div>
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button type="button" onClick={handleSubmit} className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                  Confirm Submit
-                </button>
-                <button type="button" onClick={() => setShowModal(false)} className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                  Cancel
-                </button>
-              </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="bg-[#0D2232] border border-[#102C40] rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <h3 className="text-base font-bold text-white mb-2">Ready to Submit?</h3>
+            <p className="text-xs text-white/70 mb-4">
+              You answered <span className="font-bold text-[#D8FF00]">{answeredCount}</span> of <span className="font-bold text-white">{quiz.questions.length}</span> questions.
+            </p>
+            {flaggedQuestions.size > 0 && (
+              <p className="text-xs text-amber-300 mb-4">
+                You have {flaggedQuestions.size} flagged question{flaggedQuestions.size > 1 ? 's' : ''}.
+              </p>
+            )}
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 text-xs font-medium text-white/60 hover:text-white"
+              >
+                Review Answers
+              </button>
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 bg-[#D8FF00] hover:bg-[#cbf200] text-black font-semibold text-xs rounded-xl shadow-[0_0_15px_rgba(216,255,0,0.3)]"
+              >
+                Submit Now
+              </button>
             </div>
           </div>
         </div>
@@ -227,4 +229,3 @@ export default function QuizPage() {
     </div>
   );
 }
-

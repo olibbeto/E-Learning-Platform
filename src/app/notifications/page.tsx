@@ -6,10 +6,10 @@ import { useApp } from '@/context/AppContext';
 import { Clock, Star, BookOpen, Megaphone, CheckCircle2 } from 'lucide-react';
 
 const iconMap = {
-  assignment: { icon: Clock, color: 'text-amber-500', bg: 'bg-amber-100' },
-  grade: { icon: Star, color: 'text-green-500', bg: 'bg-green-100' },
-  lesson: { icon: BookOpen, color: 'text-blue-500', bg: 'bg-blue-100' },
-  announcement: { icon: Megaphone, color: 'text-indigo-500', bg: 'bg-indigo-100' }
+  assignment: { icon: Clock, color: 'text-[#D8FF00]', bg: 'bg-[#D8FF00]/15' },
+  grade: { icon: Star, color: 'text-emerald-400', bg: 'bg-emerald-500/15' },
+  lesson: { icon: BookOpen, color: 'text-blue-400', bg: 'bg-blue-500/15' },
+  announcement: { icon: Megaphone, color: 'text-purple-400', bg: 'bg-purple-500/15' }
 };
 
 export default function NotificationsPage() {
@@ -23,32 +23,34 @@ export default function NotificationsPage() {
     : notifications.filter(n => !n.read);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-[#081726] text-white flex flex-col font-sans selection:bg-[#D8FF00] selection:text-black">
       <Navbar />
-      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
         {/* Header Section */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+            <h1 className="text-3xl font-black text-white tracking-tight">
+              Notifi<span className="text-[#D8FF00]">cations</span>
+            </h1>
             {unreadCount > 0 && (
-              <span className="bg-indigo-100 text-indigo-700 py-0.5 px-2.5 rounded-full text-xs font-bold">
+              <span className="bg-[#D8FF00] text-black py-0.5 px-3 rounded-full text-xs font-bold shadow-[0_0_10px_#D8FF00]">
                 {unreadCount} new
               </span>
             )}
           </div>
           
-          <div className="flex items-center justify-between sm:justify-end gap-4">
-            <div className="flex bg-gray-100 p-1 rounded-lg">
+          <div className="flex items-center justify-between sm:justify-end gap-3">
+            <div className="flex bg-[#0D2232] border border-white/10 p-1 rounded-full">
               <button 
                 onClick={() => setFilter('all')}
-                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${filter === 'all' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`px-4 py-1.5 text-xs font-bold rounded-full transition-all ${filter === 'all' ? 'bg-[#D8FF00] text-black shadow-sm' : 'text-white/60 hover:text-white'}`}
               >
                 All
               </button>
               <button 
                 onClick={() => setFilter('unread')}
-                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${filter === 'unread' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`px-4 py-1.5 text-xs font-bold rounded-full transition-all ${filter === 'unread' ? 'bg-[#D8FF00] text-black shadow-sm' : 'text-white/60 hover:text-white'}`}
               >
                 Unread
               </button>
@@ -56,67 +58,62 @@ export default function NotificationsPage() {
             {unreadCount > 0 && (
               <button 
                 onClick={markAllNotificationsRead}
-                className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors"
+                className="text-xs font-bold text-[#D8FF00] hover:underline transition-colors"
               >
-                Mark all as read
+                Mark all read
               </button>
             )}
           </div>
         </div>
 
-        {/* Notifications List */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          {filteredNotifications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-              <div className="bg-gray-100 p-4 rounded-full mb-4">
-                <CheckCircle2 size={32} className="text-gray-400" />
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-1">You're all caught up!</h3>
-              <p className="text-gray-500">No {filter === 'unread' ? 'unread ' : ''}notifications at this time.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {filteredNotifications.map((notification) => {
-                const typeConfig = iconMap[notification.type as keyof typeof iconMap];
-                const Icon = typeConfig.icon;
-                
-                return (
-                  <div 
-                    key={notification.id}
-                    onClick={() => !notification.read && markNotificationRead(notification.id)}
-                    className={`relative p-5 flex gap-4 transition-colors cursor-pointer hover:bg-gray-50 ${!notification.read ? 'bg-blue-50/30' : ''}`}
-                  >
-                    {/* Unread Indicator */}
-                    {!notification.read && (
-                      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-12 bg-blue-500 rounded-r-full"></span>
-                    )}
-                    
-                    {/* Icon */}
-                    <div className={`shrink-0 flex items-center justify-center w-10 h-10 rounded-full ${typeConfig.bg}`}>
-                      <Icon size={20} className={typeConfig.color} />
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-baseline justify-between gap-2 mb-1">
-                        <p className={`text-sm truncate ${!notification.read ? 'font-bold text-gray-900' : 'font-medium text-gray-700'}`}>
-                          {notification.title}
-                        </p>
-                        <span className="text-xs text-gray-500 shrink-0 whitespace-nowrap">
-                          {notification.timestamp}
-                        </span>
-                      </div>
-                      <p className={`text-sm ${!notification.read ? 'text-gray-800' : 'text-gray-500'}`}>
-                        {notification.message}
-                      </p>
-                    </div>
+        {/* List Section */}
+        {filteredNotifications.length === 0 ? (
+          <div className="text-center py-16 bg-[#0D2232] rounded-3xl border border-white/10 shadow-xl">
+            <CheckCircle2 className="w-12 h-12 text-[#D8FF00]/40 mx-auto mb-3" />
+            <h3 className="text-lg font-bold text-white">No notifications</h3>
+            <p className="text-xs text-white/50 mt-1">You're completely up to date.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredNotifications.map((notification) => {
+              const config = iconMap[notification.type as keyof typeof iconMap] || iconMap.announcement;
+              const Icon = config.icon;
+              return (
+                <div 
+                  key={notification.id} 
+                  onClick={() => markNotificationRead(notification.id)}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer flex gap-4 items-start ${
+                    notification.read 
+                      ? 'bg-[#0D2232]/60 border-white/5 text-white/70 hover:bg-[#0D2232]' 
+                      : 'bg-[#0D2232] border-[#D8FF00]/30 shadow-[0_0_15px_rgba(216,255,0,0.06)]'
+                  }`}
+                >
+                  <div className={`p-2.5 rounded-xl shrink-0 ${config.bg} ${config.color}`}>
+                    <Icon size={18} />
                   </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-        
+                  
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h4 className={`text-sm font-bold truncate ${notification.read ? 'text-white/80' : 'text-white'}`}>
+                        {notification.title}
+                      </h4>
+                      <span className="text-[11px] text-white/40 shrink-0">
+                        {new Date(notification.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    <p className="text-xs text-white/60 mt-1 leading-relaxed">
+                      {notification.message}
+                    </p>
+                  </div>
+                  
+                  {!notification.read && (
+                    <span className="w-2 h-2 rounded-full bg-[#D8FF00] shadow-[0_0_6px_#D8FF00] shrink-0 mt-2" />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </main>
     </div>
   );

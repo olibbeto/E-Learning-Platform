@@ -3,11 +3,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { CourseSidebar } from '@/components/layout/CourseSidebar';
 import { Play, Pause, Maximize, Volume2, ArrowLeft, ArrowRight, CheckCircle, FileText, Download, Menu, Clock, BookOpen, X } from 'lucide-react';
 
-// Mock context to ensure the page works even if context isn't fully defined elsewhere
-// In a real app, you would import this: import { useLearningContext } from '@/context/LearningContext';
 const mockAllCourses = [
   {
     id: 'c1',
@@ -116,7 +113,6 @@ export default function LessonPage({ params }: { params: { courseId: string; les
   const handleComplete = () => {
     if (!isCompleted && lesson) {
       markLessonComplete(lesson.id);
-      alert('✓ Lesson Completed!');
     }
   };
 
@@ -125,32 +121,32 @@ export default function LessonPage({ params }: { params: { courseId: string; les
   };
 
   if (!lesson) {
-    return <div className="p-8 text-center">Lesson not found.</div>;
+    return <div className="p-8 text-center text-white">Lesson not found.</div>;
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#081726] text-white overflow-hidden">
       {/* Top bar */}
-      <header className="flex-none h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6 z-20">
+      <header className="flex-none h-16 bg-[#0A1926] border-b border-[#102C40] flex items-center justify-between px-4 sm:px-6 z-20">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-md"
+            className="lg:hidden p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-md"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <Link href="/my-learning" className="p-2 text-gray-600 hover:bg-gray-100 rounded-full transition-colors">
+          <Link href="/my-learning" className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <h1 className="font-semibold text-lg hidden sm:block truncate max-w-sm">{course.title}</h1>
+          <h1 className="font-semibold text-sm sm:text-base hidden sm:block truncate max-w-sm text-white">{course.title}</h1>
         </div>
         
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex flex-col items-end">
-            <span className="text-sm font-medium text-gray-700">Lesson {currentIndex + 1} of {totalLessons}</span>
-            <div className="w-32 h-2 bg-gray-200 rounded-full mt-1 overflow-hidden">
+            <span className="text-xs font-medium text-white/70">Lesson {currentIndex + 1} of {totalLessons}</span>
+            <div className="w-32 h-1.5 bg-white/10 rounded-full mt-1.5 overflow-hidden">
               <div 
-                className="h-full bg-blue-600 transition-all duration-300"
+                className="h-full bg-[#D8FF00] rounded-full transition-all duration-300 shadow-[0_0_8px_rgba(216,255,0,0.6)]"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -162,13 +158,12 @@ export default function LessonPage({ params }: { params: { courseId: string; les
       <div className="flex flex-1 overflow-hidden">
         
         {/* Left Sidebar (Desktop) */}
-        <aside className="hidden lg:block w-72 bg-white border-r border-gray-200 overflow-y-auto">
-          {/* We'd normally use the CourseSidebar component here, passing course info */}
+        <aside className="hidden lg:block w-72 bg-[#0A1926] border-r border-[#102C40] overflow-y-auto">
           <div className="p-4">
-            <h2 className="font-bold text-lg mb-4">Course Content</h2>
+            <h2 className="font-bold text-sm tracking-wider uppercase text-white/50 mb-3">Course Content</h2>
             {course.modules.map(mod => (
               <div key={mod.id} className="mb-4">
-                <h3 className="font-semibold text-sm text-gray-700 mb-2">{mod.title}</h3>
+                <h3 className="font-semibold text-xs text-white/80 mb-2">{mod.title}</h3>
                 <ul className="space-y-1">
                   {mod.lessons.map(l => {
                     const isCurrent = l.id === lesson.id;
@@ -177,9 +172,13 @@ export default function LessonPage({ params }: { params: { courseId: string; les
                       <li key={l.id}>
                         <Link 
                           href={`/learn/${courseId}/${l.id}`}
-                          className={`flex items-center gap-2 p-2 rounded-md text-sm transition-colors ${isCurrent ? 'bg-blue-50 text-blue-700 font-medium' : 'hover:bg-gray-100 text-gray-600'}`}
+                          className={`flex items-center gap-2 p-2 rounded-lg text-xs transition-colors ${
+                            isCurrent 
+                              ? 'bg-[#D8FF00]/15 text-[#D8FF00] font-semibold border-l-2 border-[#D8FF00]' 
+                              : 'hover:bg-white/5 text-white/70'
+                          }`}
                         >
-                          {isDone ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Play className="w-4 h-4 text-gray-400" />}
+                          {isDone ? <CheckCircle className="w-3.5 h-3.5 text-[#D8FF00]" /> : <Play className="w-3.5 h-3.5 text-white/40" />}
                           <span className="truncate">{l.title}</span>
                         </Link>
                       </li>
@@ -194,16 +193,18 @@ export default function LessonPage({ params }: { params: { courseId: string; les
         {/* Left Sidebar (Mobile Drawer) */}
         {sidebarOpen && (
           <div className="fixed inset-0 z-50 lg:hidden flex">
-            <div className="fixed inset-0 bg-black/50" onClick={() => setSidebarOpen(false)}></div>
-            <div className="relative flex flex-col w-72 bg-white h-full shadow-xl">
-              <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="font-bold">Course Content</h2>
-                <button onClick={() => setSidebarOpen(false)}><X className="w-5 h-5 text-gray-500"/></button>
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setSidebarOpen(false)}></div>
+            <div className="relative flex flex-col w-72 bg-[#0A1926] h-full shadow-2xl border-r border-[#102C40]">
+              <div className="flex items-center justify-between p-4 border-b border-[#102C40]">
+                <h2 className="font-bold text-sm text-white">Course Content</h2>
+                <button onClick={() => setSidebarOpen(false)} className="text-white/60 hover:text-white">
+                  <X className="w-5 h-5" />
+                </button>
               </div>
               <div className="p-4 overflow-y-auto">
                 {course.modules.map(mod => (
                   <div key={mod.id} className="mb-4">
-                    <h3 className="font-semibold text-sm text-gray-700 mb-2">{mod.title}</h3>
+                    <h3 className="font-semibold text-xs text-white/80 mb-2">{mod.title}</h3>
                     <ul className="space-y-1">
                       {mod.lessons.map(l => {
                         const isCurrent = l.id === lesson.id;
@@ -213,9 +214,9 @@ export default function LessonPage({ params }: { params: { courseId: string; les
                             <Link 
                               onClick={() => setSidebarOpen(false)}
                               href={`/learn/${courseId}/${l.id}`}
-                              className={`flex items-center gap-2 p-2 rounded-md text-sm ${isCurrent ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600'}`}
+                              className={`flex items-center gap-2 p-2 rounded-lg text-xs ${isCurrent ? 'bg-[#D8FF00]/15 text-[#D8FF00] font-semibold' : 'text-white/70'}`}
                             >
-                              {isDone ? <CheckCircle className="w-4 h-4 text-green-500" /> : <Play className="w-4 h-4 text-gray-400" />}
+                              {isDone ? <CheckCircle className="w-3.5 h-3.5 text-[#D8FF00]" /> : <Play className="w-3.5 h-3.5 text-white/40" />}
                               <span className="truncate">{l.title}</span>
                             </Link>
                           </li>
@@ -230,25 +231,25 @@ export default function LessonPage({ params }: { params: { courseId: string; les
         )}
 
         {/* Center Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 flex justify-center">
+        <main className="flex-1 overflow-y-auto bg-[#081726] flex justify-center">
           <div className="max-w-4xl w-full p-4 sm:p-8 flex flex-col gap-8 pb-32">
             
             {/* Breadcrumb */}
-            <nav className="text-sm text-gray-500 flex gap-2 items-center">
-              <span>My Learning</span>
+            <nav className="text-xs text-white/50 flex gap-2 items-center">
+              <Link href="/my-learning" className="hover:text-white">My Learning</Link>
               <span>/</span>
               <span className="truncate max-w-[150px]">{course.title}</span>
               <span>/</span>
               <span className="truncate max-w-[150px]">{lesson.moduleTitle}</span>
               <span>/</span>
-              <span className="text-gray-900 font-medium">{lesson.title}</span>
+              <span className="text-[#D8FF00] font-medium">{lesson.title}</span>
             </nav>
 
-            <h1 className="text-3xl font-bold text-gray-900">{lesson.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">{lesson.title}</h1>
 
-            {/* Video Player Mockup */}
-            <div className="w-full aspect-video bg-gray-900 rounded-xl overflow-hidden relative flex flex-col group shadow-lg">
-              <div className="absolute top-4 left-4 text-white/80 text-sm font-medium z-10 drop-shadow-md">
+            {/* Video Player */}
+            <div className="w-full aspect-video bg-[#050D15] rounded-2xl overflow-hidden relative flex flex-col group border border-[#102C40] shadow-2xl">
+              <div className="absolute top-4 left-4 text-white/80 text-xs font-medium z-10 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full">
                 Now playing: {lesson.title}
               </div>
               
@@ -256,103 +257,104 @@ export default function LessonPage({ params }: { params: { courseId: string; les
                 {/* Center Play/Pause Overlay */}
                 <button 
                   onClick={togglePlay}
-                  className="w-16 h-16 bg-blue-600/90 text-white rounded-full flex items-center justify-center hover:bg-blue-500 hover:scale-105 transition-all shadow-lg"
+                  className="w-16 h-16 bg-[#D8FF00] text-black rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-[0_0_30px_rgba(216,255,0,0.5)]"
                 >
-                  {isPlaying ? <Pause className="w-8 h-8" /> : <Play className="w-8 h-8 ml-1" />}
+                  {isPlaying ? <Pause className="w-7 h-7 fill-black" /> : <Play className="w-7 h-7 ml-1 fill-black" />}
                 </button>
               </div>
 
               {/* Controls */}
-              <div className="h-14 bg-gradient-to-t from-black/80 to-transparent flex items-center px-4 gap-4 text-white">
-                <button onClick={togglePlay} className="hover:text-blue-400 transition-colors">
+              <div className="h-14 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex items-center px-4 gap-4 text-white">
+                <button onClick={togglePlay} className="hover:text-[#D8FF00] transition-colors">
                   {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
                 </button>
                 
                 <div className="flex-1 flex items-center gap-2 group/slider cursor-pointer">
-                  <span className="text-xs font-medium w-10 text-right">
+                  <span className="text-xs font-mono text-white/60 w-10 text-right">
                     {Math.floor((progress * parseInt(lesson.duration)) / 100)}:{(Math.floor((progress * parseInt(lesson.duration) * 60) / 100) % 60).toString().padStart(2, '0')}
                   </span>
-                  <div className="flex-1 h-1.5 bg-gray-600 rounded-full relative overflow-hidden">
-                    <div className="absolute inset-y-0 left-0 bg-blue-500" style={{ width: `${progress}%` }}></div>
+                  <div className="flex-1 h-1.5 bg-white/20 rounded-full relative overflow-hidden">
+                    <div className="absolute inset-y-0 left-0 bg-[#D8FF00]" style={{ width: `${progress}%` }}></div>
                   </div>
-                  <span className="text-xs font-medium w-10">{lesson.duration}</span>
+                  <span className="text-xs font-mono text-white/60 w-10">{lesson.duration}</span>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <select 
                     value={playbackSpeed}
                     onChange={(e) => setPlaybackSpeed(Number(e.target.value))}
-                    className="bg-transparent text-sm cursor-pointer hover:text-blue-400 outline-none"
+                    className="bg-transparent text-xs cursor-pointer hover:text-[#D8FF00] outline-none text-white/80"
                   >
-                    <option value={0.5} className="text-black">0.5x</option>
-                    <option value={1} className="text-black">1x</option>
-                    <option value={1.25} className="text-black">1.25x</option>
-                    <option value={1.5} className="text-black">1.5x</option>
-                    <option value={2} className="text-black">2x</option>
+                    <option value={0.5} className="bg-[#0A1926] text-white">0.5x</option>
+                    <option value={1} className="bg-[#0A1926] text-white">1x</option>
+                    <option value={1.25} className="bg-[#0A1926] text-white">1.25x</option>
+                    <option value={1.5} className="bg-[#0A1926] text-white">1.5x</option>
+                    <option value={2} className="bg-[#0A1926] text-white">2x</option>
                   </select>
                   
-                  <div className="flex items-center gap-1 group/vol">
-                    <Volume2 className="w-5 h-5 hover:text-blue-400 cursor-pointer" />
+                  <div className="flex items-center gap-1">
+                    <Volume2 className="w-4 h-4 hover:text-[#D8FF00] cursor-pointer" />
                   </div>
 
-                  <button className="hover:text-blue-400 transition-colors">
-                    <Maximize className="w-5 h-5" />
+                  <button className="hover:text-[#D8FF00] transition-colors">
+                    <Maximize className="w-4 h-4" />
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            {/* Content card */}
+            <div className="flex flex-col gap-6 bg-[#0D2232] p-6 sm:p-8 rounded-2xl border border-[#102C40] shadow-xl">
               <section>
-                <h2 className="text-xl font-semibold mb-3">Lesson Summary</h2>
-                <p className="text-gray-700 leading-relaxed">
-                  In this lesson, we explore the fundamental concepts of {lesson.title.toLowerCase()}. Understanding these principles is critical for designing intuitive user interfaces and experiences.
+                <h2 className="text-lg font-bold text-white mb-3">Lesson Summary</h2>
+                <p className="text-white/70 leading-relaxed text-sm">
+                  In this lesson, we explore the fundamental concepts of {lesson.title.toLowerCase()}. Understanding these principles is critical for designing intuitive user interfaces and modern educational systems.
                 </p>
-                <h3 className="font-medium mt-4 mb-2">Learning Objectives:</h3>
-                <ul className="list-disc pl-5 space-y-1 text-gray-700">
+                <h3 className="font-semibold text-sm text-[#D8FF00] mt-4 mb-2">Learning Objectives:</h3>
+                <ul className="list-disc pl-5 space-y-1 text-sm text-white/70">
                   <li>Define the core aspects of {lesson.title.toLowerCase()}.</li>
                   <li>Identify common patterns used in modern web design.</li>
                   <li>Apply basic psychological principles to UI layouts.</li>
                 </ul>
               </section>
 
-              <hr className="border-gray-100" />
+              <hr className="border-[#102C40]" />
 
               <section>
-                <h2 className="text-xl font-semibold mb-3">Reading Material</h2>
-                <div className="prose prose-blue max-w-none text-gray-700">
-                  <p className="mb-4">
-                    Human-Computer Interaction (HCI) is a multidisciplinary field of study focusing on the design of computer technology and, in particular, the interaction between humans (the users) and computers. While initially concerned with computers, HCI has since expanded to cover almost all forms of information technology design.
+                <h2 className="text-lg font-bold text-white mb-3">Reading Material</h2>
+                <div className="text-white/75 text-sm space-y-3 leading-relaxed">
+                  <p>
+                    Human-Computer Interaction (HCI) is a multidisciplinary field of study focusing on the design of computer technology and, in particular, the interaction between humans (the users) and computers.
                   </p>
                   <p>
-                    When designing interfaces, affordances play a crucial role. An affordance is a property in which the physical characteristics of an object or environment influence its function. For example, a physical button affords clicking, and a digital button must visually signal that same affordance using signifiers like shadows, borders, or color changes.
+                    When designing interfaces, affordances play a crucial role. An affordance is a property in which the physical characteristics of an object or environment influence its function. For example, a physical button affords clicking, and a digital button must visually signal that same affordance using signifiers like borders, subtle glow, or high-contrast accent colors.
                   </p>
                 </div>
               </section>
 
-              <hr className="border-gray-100" />
+              <hr className="border-[#102C40]" />
 
               <section>
-                <h2 className="text-xl font-semibold mb-4">Resources</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <h2 className="text-lg font-bold text-white mb-4">Resources</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {[
                     { name: 'Lecture Slides', type: 'PDF', size: '2.4 MB' },
                     { name: 'Design Assets', type: 'ZIP', size: '15.1 MB' },
                     { name: 'Cheatsheet', type: 'PDF', size: '1.1 MB' }
                   ].map((res, i) => (
-                    <div key={i} className="border border-gray-200 rounded-lg p-4 flex items-center justify-between hover:border-blue-300 transition-colors bg-gray-50">
+                    <div key={i} className="border border-[#102C40] rounded-xl p-3.5 flex items-center justify-between hover:border-[#D8FF00]/50 transition-colors bg-[#0A1926]">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center">
-                          <FileText className="w-5 h-5" />
+                        <div className="w-9 h-9 bg-[#D8FF00]/10 text-[#D8FF00] rounded-lg flex items-center justify-center">
+                          <FileText className="w-4 h-4" />
                         </div>
                         <div>
-                          <p className="font-medium text-sm text-gray-900 truncate max-w-[100px]">{res.name}</p>
-                          <p className="text-xs text-gray-500">{res.type} • {res.size}</p>
+                          <p className="font-medium text-xs text-white truncate max-w-[90px]">{res.name}</p>
+                          <p className="text-[11px] text-white/40">{res.type} • {res.size}</p>
                         </div>
                       </div>
                       <button 
                         onClick={() => handleDownload(res.name)}
-                        className="text-gray-400 hover:text-blue-600 p-2 rounded-full hover:bg-blue-50 transition-colors"
+                        className="text-white/40 hover:text-[#D8FF00] p-1.5 rounded-full hover:bg-white/5 transition-colors"
                       >
                         <Download className="w-4 h-4" />
                       </button>
@@ -361,18 +363,18 @@ export default function LessonPage({ params }: { params: { courseId: string; les
                 </div>
               </section>
 
-              <hr className="border-gray-100" />
+              <hr className="border-[#102C40]" />
 
               <section>
                 <div className="flex items-center justify-between mb-3">
-                  <h2 className="text-xl font-semibold">Your Notes</h2>
-                  {saveStatus && <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">{saveStatus}</span>}
+                  <h2 className="text-lg font-bold text-white">Your Notes</h2>
+                  {saveStatus && <span className="text-xs text-[#D8FF00] font-medium bg-[#D8FF00]/10 px-2.5 py-1 rounded-full">{saveStatus}</span>}
                 </div>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="Take notes here... They are automatically saved."
-                  className="w-full h-32 p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none resize-y text-gray-700 bg-gray-50 focus:bg-white transition-colors"
+                  className="w-full h-32 p-4 border border-[#102C40] rounded-xl focus:ring-2 focus:ring-[#D8FF00] focus:border-transparent outline-none resize-y text-white text-sm bg-[#0A1926] transition-colors"
                 ></textarea>
               </section>
             </div>
@@ -380,48 +382,48 @@ export default function LessonPage({ params }: { params: { courseId: string; les
         </main>
 
         {/* Right Sidebar (Desktop) */}
-        <aside className="hidden xl:block w-80 bg-white border-l border-gray-200 overflow-y-auto">
+        <aside className="hidden xl:block w-80 bg-[#0A1926] border-l border-[#102C40] overflow-y-auto">
           <div className="p-6 space-y-6">
-            <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
-              <h3 className="font-semibold text-blue-900 mb-4">Your Progress</h3>
+            <div className="bg-[#0D2232] rounded-2xl p-5 border border-[#102C40]">
+              <h3 className="font-semibold text-white text-sm mb-4">Your Progress</h3>
               <div className="space-y-4">
                 <div>
-                  <div className="flex justify-between text-sm mb-1 text-blue-800">
+                  <div className="flex justify-between text-xs mb-1.5 text-white/70">
                     <span>Course Completion</span>
-                    <span className="font-bold">{progressPercent}%</span>
+                    <span className="font-bold text-[#D8FF00]">{progressPercent}%</span>
                   </div>
-                  <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-600 rounded-full" style={{ width: `${progressPercent}%` }}></div>
+                  <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div className="h-full bg-[#D8FF00] rounded-full shadow-[0_0_8px_rgba(216,255,0,0.5)]" style={{ width: `${progressPercent}%` }}></div>
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="bg-white p-3 rounded-lg border border-blue-100 text-center">
-                    <span className="block text-2xl font-bold text-blue-700">{completedCount}/{totalLessons}</span>
-                    <span className="text-blue-600/80 text-xs uppercase font-semibold">Lessons</span>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="bg-[#0A1926] p-3 rounded-xl border border-[#102C40] text-center">
+                    <span className="block text-xl font-bold text-white">{completedCount}/{totalLessons}</span>
+                    <span className="text-white/40 text-[10px] uppercase font-semibold">Lessons</span>
                   </div>
-                  <div className="bg-white p-3 rounded-lg border border-blue-100 text-center">
-                    <span className="block text-2xl font-bold text-blue-700">12h</span>
-                    <span className="text-blue-600/80 text-xs uppercase font-semibold">Remaining</span>
+                  <div className="bg-[#0A1926] p-3 rounded-xl border border-[#102C40] text-center">
+                    <span className="block text-xl font-bold text-[#D8FF00]">12h</span>
+                    <span className="text-white/40 text-[10px] uppercase font-semibold">Remaining</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div>
-              <h3 className="font-semibold text-gray-900 mb-3">About this Lesson</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 text-gray-600 bg-gray-50 p-3 rounded-lg">
-                  <Clock className="w-5 h-5 text-gray-400" />
+              <h3 className="font-semibold text-white text-sm mb-3">About this Lesson</h3>
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-3 text-white/70 bg-[#0D2232] p-3 rounded-xl border border-[#102C40]">
+                  <Clock className="w-4 h-4 text-[#D8FF00]" />
                   <div>
-                    <p className="text-xs text-gray-500 uppercase font-semibold">Duration</p>
-                    <p className="font-medium text-gray-900">{lesson.duration}</p>
+                    <p className="text-[10px] text-white/40 uppercase font-semibold">Duration</p>
+                    <p className="font-medium text-xs text-white">{lesson.duration}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 text-gray-600 bg-gray-50 p-3 rounded-lg">
-                  <BookOpen className="w-5 h-5 text-gray-400" />
+                <div className="flex items-center gap-3 text-white/70 bg-[#0D2232] p-3 rounded-xl border border-[#102C40]">
+                  <BookOpen className="w-4 h-4 text-[#D8FF00]" />
                   <div>
-                    <p className="text-xs text-gray-500 uppercase font-semibold">Module</p>
-                    <p className="font-medium text-gray-900">{lesson.moduleTitle}</p>
+                    <p className="text-[10px] text-white/40 uppercase font-semibold">Module</p>
+                    <p className="font-medium text-xs text-white">{lesson.moduleTitle}</p>
                   </div>
                 </div>
               </div>
@@ -429,16 +431,14 @@ export default function LessonPage({ params }: { params: { courseId: string; les
 
             {nextLesson && (
               <div>
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center justify-between">
-                  <span>Up Next</span>
-                </h3>
-                <Link href={`/learn/${courseId}/${nextLesson.id}`} className="block border border-gray-200 rounded-xl p-4 hover:border-blue-400 hover:shadow-md transition-all group cursor-pointer">
+                <h3 className="font-semibold text-white text-sm mb-3">Up Next</h3>
+                <Link href={`/learn/${courseId}/${nextLesson.id}`} className="block border border-[#102C40] rounded-xl p-4 bg-[#0D2232] hover:border-[#D8FF00]/50 transition-all group cursor-pointer">
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Next Lesson</span>
-                    <Play className="w-5 h-5 text-gray-400 group-hover:text-blue-500" />
+                    <span className="text-[10px] font-semibold text-[#D8FF00] bg-[#D8FF00]/10 px-2 py-0.5 rounded-full">Next Lesson</span>
+                    <Play className="w-4 h-4 text-white/40 group-hover:text-[#D8FF00]" />
                   </div>
-                  <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">{nextLesson.title}</h4>
-                  <p className="text-sm text-gray-500 mt-1">{nextLesson.duration} • Video</p>
+                  <h4 className="font-medium text-xs text-white group-hover:text-[#D8FF00] transition-colors">{nextLesson.title}</h4>
+                  <p className="text-[11px] text-white/40 mt-1">{nextLesson.duration} • Video</p>
                 </Link>
               </div>
             )}
@@ -447,11 +447,11 @@ export default function LessonPage({ params }: { params: { courseId: string; les
       </div>
 
       {/* Navigation Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-200 z-30 lg:left-72 xl:right-80 px-4 sm:px-8 flex items-center justify-between shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <footer className="fixed bottom-0 left-0 right-0 h-20 bg-[#0A1926]/95 backdrop-blur-md border-t border-[#102C40] z-30 lg:left-72 xl:right-80 px-4 sm:px-8 flex items-center justify-between">
         <button
           onClick={() => prevLesson && router.push(`/learn/${courseId}/${prevLesson.id}`)}
           disabled={!prevLesson}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${!prevLesson ? 'text-gray-400 cursor-not-allowed' : 'text-gray-700 hover:bg-gray-100'}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-colors ${!prevLesson ? 'text-white/30 cursor-not-allowed' : 'text-white/80 hover:bg-white/10'}`}
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="hidden sm:inline">Previous Lesson</span>
@@ -460,29 +460,20 @@ export default function LessonPage({ params }: { params: { courseId: string; les
 
         <button
           onClick={handleComplete}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-full font-medium transition-all shadow-sm ${
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-semibold transition-all ${
             isCompleted 
-              ? 'bg-green-100 text-green-700 hover:bg-green-200 ring-2 ring-green-500/20' 
-              : 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-md'
+              ? 'bg-[#D8FF00]/20 text-[#D8FF00] border border-[#D8FF00]' 
+              : 'bg-[#D8FF00] text-black hover:bg-[#cbf200] shadow-[0_0_20px_rgba(216,255,0,0.35)]'
           }`}
         >
-          {isCompleted ? (
-            <>
-              <CheckCircle className="w-5 h-5" />
-              <span>Lesson Completed!</span>
-            </>
-          ) : (
-            <>
-              <CheckCircle className="w-5 h-5" />
-              <span>Mark as Complete</span>
-            </>
-          )}
+          <CheckCircle className="w-4 h-4" />
+          <span>{isCompleted ? 'Lesson Completed!' : 'Mark as Complete'}</span>
         </button>
 
         <button
           onClick={() => nextLesson && router.push(`/learn/${courseId}/${nextLesson.id}`)}
           disabled={!nextLesson}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${!nextLesson ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:bg-blue-50'}`}
+          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium transition-colors ${!nextLesson ? 'text-white/30 cursor-not-allowed' : 'text-[#D8FF00] hover:bg-[#D8FF00]/10'}`}
         >
           <span className="hidden sm:inline">Next Lesson</span>
           <span className="sm:hidden">Next</span>
@@ -492,4 +483,3 @@ export default function LessonPage({ params }: { params: { courseId: string; les
     </div>
   );
 }
-

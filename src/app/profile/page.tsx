@@ -4,12 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Navbar } from '@/components/layout/Navbar';
 import { useApp } from '@/context/AppContext';
-import { Edit2, Save, X, BookOpen, Clock, Star, Megaphone } from 'lucide-react';
+import { Edit2, Save, X, BookOpen, Clock, Star, Megaphone, CheckCircle2 } from 'lucide-react';
 
 const courses = [
-  { id: 'c1', name: 'Human-Computer Interaction', progress: 72, color: 'bg-indigo-500' },
-  { id: 'c2', name: 'Advanced Web Development', progress: 45, color: 'bg-blue-500' },
-  { id: 'c3', name: 'Introduction to Cybersecurity', progress: 28, color: 'bg-amber-500' },
+  { id: 'c1', name: 'Human-Computer Interaction (HCI)', progress: 72 },
+  { id: 'c2', name: 'Web Development Fundamentals', progress: 45 },
+  { id: 'c3', name: 'Cybersecurity Fundamentals', progress: 28 },
 ];
 
 const iconMap = {
@@ -20,14 +20,14 @@ const iconMap = {
 };
 
 export default function ProfilePage() {
-  const { updateProfile, notifications } = useApp();
+  const { updateProfile, notifications, currentUser } = useApp();
   
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: 'Alex Johnson',
-    email: 'alex.johnson@example.com',
-    bio: 'Passionate student interested in web development and UX design. Always looking for new ways to learn and build things.',
-    joinDate: 'September 2025'
+    name: currentUser?.name || 'Alex Johnson',
+    email: currentUser?.email || 'alex.johnson@university.edu',
+    bio: currentUser?.bio || 'Passionate student interested in web development and UX design. Always looking for new ways to learn and build things.',
+    joinDate: 'January 2024'
   });
   
   const [editForm, setEditForm] = useState(profile);
@@ -35,7 +35,7 @@ export default function ProfilePage() {
 
   const handleSave = () => {
     setProfile(editForm);
-    updateProfile(editForm);
+    if (updateProfile) updateProfile(editForm);
     setIsEditing(false);
     setToastMessage('Profile updated successfully');
     setTimeout(() => setToastMessage(null), 3000);
@@ -47,135 +47,102 @@ export default function ProfilePage() {
   };
 
   const initials = profile.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-
-  const recentActivity = [...notifications].slice(0, 5);
+  const recentActivity = [...(notifications || [])].slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col relative">
+    <div className="min-h-screen bg-[#081726] text-white flex flex-col font-sans selection:bg-[#D8FF00] selection:text-black">
       <Navbar />
       
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-4 right-4 z-50 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
-          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-          <p className="text-sm font-medium">{toastMessage}</p>
+        <div className="fixed top-6 right-6 z-50 bg-[#D8FF00] text-black font-bold px-5 py-2.5 rounded-full shadow-[0_0_20px_rgba(216,255,0,0.4)] flex items-center gap-2.5 animate-fade-in-up">
+          <CheckCircle2 className="w-4 h-4 text-black" />
+          <span className="text-xs">{toastMessage}</span>
         </div>
       )}
 
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         
-        {/* Profile Header */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 flex flex-col md:flex-row gap-8 items-start md:items-center relative">
-          <div className="w-24 h-24 rounded-full bg-indigo-600 text-white flex items-center justify-center text-3xl font-bold shrink-0 shadow-inner">
-            {initials}
-          </div>
-          
-          <div className="flex-1">
-            {isEditing ? (
-              <div className="space-y-4 max-w-lg">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                  <input 
-                    id="profile-name"
-                    type="text" 
-                    value={editForm.name}
-                    onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                    onInput={(e) => setEditForm({...editForm, name: (e.target as HTMLInputElement).value})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
-                  <textarea 
-                    id="profile-bio"
-                    value={editForm.bio}
-                    onChange={(e) => setEditForm({...editForm, bio: e.target.value})}
-                    onInput={(e) => setEditForm({...editForm, bio: (e.target as HTMLTextAreaElement).value})}
-                    rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  />
-                </div>
+        {/* Profile Header Card */}
+        <div className="bg-[#0D2232] rounded-3xl shadow-xl border border-white/10 p-6 sm:p-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="flex items-center gap-5">
+              <div className="w-20 h-20 rounded-full bg-[#102C40] border-2 border-[#D8FF00] flex items-center justify-center text-2xl font-black text-[#D8FF00] shadow-[0_0_15px_rgba(216,255,0,0.3)]">
+                {initials}
               </div>
-            ) : (
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-1">{profile.name}</h1>
-                <p className="text-gray-500 mb-3">{profile.email} • Joined {profile.joinDate}</p>
-                <p className="text-gray-700 max-w-2xl leading-relaxed">{profile.bio}</p>
+                <h1 className="text-2xl sm:text-3xl font-black text-white">{profile.name}</h1>
+                <p className="text-xs text-white/50 mt-0.5">{profile.email}</p>
+                <div className="flex items-center gap-3 mt-2 text-xs">
+                  <span className="text-[#D8FF00] font-semibold bg-[#D8FF00]/15 px-3 py-0.5 rounded-full border border-[#D8FF00]/30">Student</span>
+                  <span className="text-white/40">Member since {profile.joinDate}</span>
+                </div>
               </div>
-            )}
+            </div>
+
+            <div>
+              {isEditing ? (
+                <div className="flex gap-2">
+                  <button 
+                    onClick={handleSave} 
+                    className="flex items-center gap-1.5 px-5 py-2.5 bg-[#D8FF00] text-black font-bold rounded-full text-xs hover:bg-[#cbf000] shadow-[0_0_12px_rgba(216,255,0,0.25)] transition-all"
+                  >
+                    <Save size={14} />
+                    <span>Save</span>
+                  </button>
+                  <button 
+                    onClick={handleCancel} 
+                    className="flex items-center gap-1.5 px-4 py-2.5 bg-white/10 text-white font-medium rounded-full text-xs hover:bg-white/15 transition-all"
+                  >
+                    <X size={14} />
+                    <span>Cancel</span>
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setIsEditing(true)} 
+                  className="flex items-center gap-1.5 px-5 py-2.5 bg-white/10 text-white border border-white/10 hover:border-[#D8FF00]/40 font-bold rounded-full text-xs hover:bg-white/15 transition-all"
+                >
+                  <Edit2 size={14} className="text-[#D8FF00]" />
+                  <span>Edit Profile</span>
+                </button>
+              )}
+            </div>
           </div>
-          
-          <div className="md:self-start flex gap-2">
+
+          <div className="mt-8 pt-6 border-t border-white/10">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-white/50 mb-2">About Me</h2>
             {isEditing ? (
-              <>
-                <button 
-                  onClick={handleCancel}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-                >
-                  <X size={16} />
-                  Cancel
-                </button>
-                <button 
-                  onClick={handleSave}
-                  className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
-                >
-                  <Save size={16} />
-                  Save Changes
-                </button>
-              </>
+              <textarea 
+                value={editForm.bio}
+                onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                className="w-full p-3 rounded-2xl bg-[#081726] border border-white/15 text-white text-sm focus:outline-none focus:border-[#D8FF00]"
+                rows={3}
+              />
             ) : (
-              <button 
-                onClick={() => setIsEditing(true)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
-              >
-                <Edit2 size={16} />
-                Edit Profile
-              </button>
+              <p className="text-sm text-white/70 leading-relaxed max-w-3xl">{profile.bio}</p>
             )}
           </div>
         </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Courses Enrolled</h3>
-            <p className="text-2xl font-bold text-gray-900">3</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Lessons Completed</h3>
-            <p className="text-2xl font-bold text-gray-900">24</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Average Grade</h3>
-            <p className="text-2xl font-bold text-gray-900">92%</p>
-          </div>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Days Active</h3>
-            <p className="text-2xl font-bold text-gray-900">45</p>
-          </div>
-        </div>
-
+        {/* Courses & Activity Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           {/* Enrolled Courses */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-            <div className="px-6 py-5 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-900">Enrolled Courses</h2>
-            </div>
-            <div className="p-6 space-y-6 flex-1">
+          <div className="bg-[#0D2232] rounded-3xl shadow-xl border border-white/10 p-6 sm:p-8 flex flex-col">
+            <h2 className="text-lg font-bold text-white mb-6">Enrolled Courses</h2>
+            <div className="space-y-6 flex-1">
               {courses.map(course => (
                 <div key={course.id}>
                   <div className="flex justify-between items-baseline mb-2">
-                    <h3 className="font-medium text-gray-900 truncate pr-4">{course.name}</h3>
-                    <span className="text-sm font-bold text-gray-700 shrink-0">{course.progress}%</span>
+                    <h3 className="text-sm font-bold text-white truncate pr-4">{course.name}</h3>
+                    <span className="text-sm font-black text-[#D8FF00]">{course.progress}%</span>
                   </div>
-                  <div className="w-full bg-gray-100 rounded-full h-2 mb-2">
-                    <div className={`h-2 rounded-full ${course.color}`} style={{ width: `${course.progress}%` }}></div>
-                  </div>
-                  <div className="flex justify-end">
-                    <Link href="/my-learning" className="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
-                      Continue →
-                    </Link>
+                  <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
+                    <div 
+                      className="bg-[#D8FF00] h-full rounded-full shadow-[0_0_8px_#D8FF00]"
+                      style={{ width: `${course.progress}%` }}
+                    />
                   </div>
                 </div>
               ))}
@@ -183,32 +150,23 @@ export default function ProfilePage() {
           </div>
 
           {/* Recent Activity */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-            <div className="px-6 py-5 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-900">Recent Activity</h2>
-            </div>
-            <div className="p-0 flex-1">
-              {recentActivity.length === 0 ? (
-                <div className="p-6 text-center text-gray-500">No recent activity.</div>
-              ) : (
-                <div className="divide-y divide-gray-100">
-                  {recentActivity.map(activity => {
-                    const Icon = iconMap[activity.type as keyof typeof iconMap] || BookOpen;
-                    return (
-                      <div key={activity.id} className="p-4 flex gap-4 hover:bg-gray-50 transition-colors">
-                        <div className="mt-0.5 shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                          <Icon size={14} />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900 mb-0.5">{activity.title}</p>
-                          <p className="text-sm text-gray-600 line-clamp-2">{activity.message}</p>
-                          <p className="text-xs text-gray-400 mt-1">{activity.timestamp}</p>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+          <div className="bg-[#0D2232] rounded-3xl shadow-xl border border-white/10 p-6 sm:p-8 flex flex-col">
+            <h2 className="text-lg font-bold text-white mb-6">Recent Activity</h2>
+            <div className="space-y-3 flex-1">
+              {recentActivity.map((act) => {
+                const IconComponent = iconMap[act.type as keyof typeof iconMap] || BookOpen;
+                return (
+                  <div key={act.id} className="flex gap-3.5 p-3 rounded-2xl bg-[#081726]/60 border border-white/5 items-center">
+                    <div className="p-2 rounded-xl bg-[#102C40] text-[#D8FF00]">
+                      <IconComponent size={16} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-white truncate">{act.title}</p>
+                      <p className="text-[11px] text-white/50 truncate mt-0.5">{act.message}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

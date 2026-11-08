@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Course } from '@/types';
-import { Star, Clock, Users, BookOpen } from 'lucide-react';
+import { Star, Clock, Users, BookOpen, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { ProgressBar } from './ProgressBar';
 import { cn, getTotalLessons, getCompletedLessons } from '@/lib/utils';
 import { withBasePath } from '@/lib/basePath';
@@ -15,7 +15,7 @@ interface CourseCardProps {
 }
 
 /** Descriptive alt text per course id — falls back to the course title. */
-const courseAltText: Record<string, string> = {
+export const courseAltText: Record<string, string> = {
   c1: 'Illustration of a wireframe interface with a cursor and user icon',
   c2: 'Illustration of a code editor and browser window with HTML tags',
   c3: 'Illustration of a shield with a padlock over a security network',
@@ -33,7 +33,7 @@ const courseAltText: Record<string, string> = {
  *   • onerror → falls back to gradient + book icon
  *   • meaningful alt text per course
  */
-function CourseIllustration({
+export function CourseIllustration({
   course,
   imgClassName = '',
 }: {
@@ -42,7 +42,7 @@ function CourseIllustration({
 }) {
   const [imgError, setImgError] = useState(false);
   const src = withBasePath(course.image);
-  const alt = courseAltText[course.id] ?? course.title;
+  const alt = courseAltText[course.id] ?? `${course.title} course illustration`;
   const showImage = !!course.image && !imgError;
 
   if (showImage) {
@@ -62,7 +62,7 @@ function CourseIllustration({
     <div
       className={cn(
         'absolute inset-0 flex items-center justify-center',
-        course.color || 'bg-gradient-to-br from-indigo-500 to-purple-600',
+        course.color || 'bg-gradient-to-br from-[#102C40] to-[#0A1926]',
       )}
       aria-hidden="true"
     >
@@ -82,7 +82,7 @@ export function CourseCard({ course, variant = 'catalog', onEnroll }: CourseCard
 
   // ── catalog ───────────────────────────────────────────────────────────────
   const renderCatalog = () => (
-    <div className="group flex flex-col bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all h-full">
+    <div className="group flex flex-col bg-[#0D2232] hover:bg-[#112d42] rounded-2xl border border-white/10 hover:border-[#D8FF00]/40 overflow-hidden shadow-lg hover:shadow-[0_15px_35px_rgba(0,0,0,0.5)] transition-all duration-300 h-full">
       {/* Image area — 3:2 aspect ratio */}
       <Link href={`/courses/${course.id}`} className="block relative aspect-[3/2] overflow-hidden">
         <CourseIllustration
@@ -90,54 +90,57 @@ export function CourseCard({ course, variant = 'catalog', onEnroll }: CourseCard
           imgClassName="transition-transform duration-500 group-hover:scale-105"
         />
         {/* Category pill — top-left, over the image */}
-        <span className="absolute top-2 left-2 z-10 px-2 py-1 bg-white/90 backdrop-blur text-xs font-medium rounded-md text-slate-700">
+        <span className="absolute top-3 left-3 z-10 px-2.5 py-1 bg-[#081726]/85 backdrop-blur-md border border-white/10 text-xs font-semibold rounded-full text-white">
           {course.category}
         </span>
         {/* Difficulty pill — top-right */}
-        <span className="absolute top-2 right-2 z-10 px-2 py-1 bg-black/60 text-white text-xs font-medium rounded-md">
+        <span className="absolute top-3 right-3 z-10 px-2.5 py-1 bg-black/60 backdrop-blur-md border border-white/10 text-white/90 text-xs font-semibold rounded-full">
           {course.difficulty}
         </span>
       </Link>
 
-      <div className="p-4 flex flex-col flex-1">
-        <Link href={`/courses/${course.id}`} className="hover:text-indigo-600 transition-colors">
-          <h3 className="font-bold text-lg text-slate-900 line-clamp-2 mb-1">{course.title}</h3>
+      <div className="p-5 flex flex-col flex-1">
+        <Link href={`/courses/${course.id}`} className="hover:text-[#D8FF00] transition-colors">
+          <h3 className="font-bold text-lg text-white group-hover:text-[#D8FF00] transition-colors line-clamp-2 mb-1.5">
+            {course.title}
+          </h3>
         </Link>
-        <p className="text-sm text-slate-600 mb-3">{instructorName}</p>
+        <p className="text-xs text-white/60 mb-3">{instructorName}</p>
 
-        <div className="flex items-center gap-4 text-sm text-slate-600 mb-4 flex-wrap">
+        <div className="flex items-center gap-4 text-xs text-white/60 mb-4 flex-wrap">
           <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 text-amber-400 fill-amber-400" aria-hidden="true" />
-            <span className="font-medium">{course.rating}</span>
-            <span className="text-slate-400">({course.reviewCount})</span>
+            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" aria-hidden="true" />
+            <span className="font-bold text-white">{course.rating}</span>
+            <span className="text-white/40">({course.reviewCount})</span>
           </div>
           <div className="flex items-center gap-1">
-            <Users className="w-4 h-4" aria-hidden="true" />
+            <Users className="w-3.5 h-3.5 text-white/40" aria-hidden="true" />
             <span>{course.students?.toLocaleString()}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock className="w-4 h-4" aria-hidden="true" />
+            <Clock className="w-3.5 h-3.5 text-white/40" aria-hidden="true" />
             <span>{course.duration}</span>
           </div>
         </div>
 
-        <p className="text-sm text-slate-600 line-clamp-2 mb-4 flex-1">
+        <p className="text-xs text-white/60 line-clamp-2 mb-4 flex-1 leading-relaxed">
           {course.shortDescription || course.description}
         </p>
 
-        <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
-          <span className="font-bold text-lg text-slate-900">{course.price}</span>
+        <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
+          <span className="font-extrabold text-lg text-[#D8FF00] tracking-tight">{course.price}</span>
           {isEnrolled ? (
             <Link
               href={`/learn/${course.id}/${course.lastLessonId || ''}`}
-              className="px-4 py-2 bg-indigo-50 text-indigo-700 font-medium rounded-lg text-sm hover:bg-indigo-100 transition-colors"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#D8FF00]/15 border border-[#D8FF00]/30 text-[#D8FF00] font-bold rounded-full text-xs hover:bg-[#D8FF00] hover:text-black transition-all"
             >
-              ✓ Enrolled
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Enrolled</span>
             </Link>
           ) : (
             <button
               onClick={() => onEnroll && onEnroll(course.id)}
-              className="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+              className="px-4 py-2 bg-[#D8FF00] text-black font-bold rounded-full text-xs hover:bg-[#cbf000] shadow-[0_0_12px_rgba(216,255,0,0.25)] transition-all min-h-[38px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D8FF00]"
             >
               Enroll Now
             </button>
@@ -151,39 +154,47 @@ export function CourseCard({ course, variant = 'catalog', onEnroll }: CourseCard
   const renderEnrolled = () => {
     const total = getTotalLessons(course);
     const completed = getCompletedLessons(course);
+    const progressPct = total > 0 ? Math.round((completed / total) * 100) : (course.progress || 0);
+
     return (
-      <div className="flex flex-col bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all">
-        <div className="flex items-start p-4 gap-4">
+      <div className="flex flex-col bg-[#0D2232] rounded-2xl border border-white/10 hover:border-[#D8FF00]/30 overflow-hidden shadow-lg transition-all p-4">
+        <div className="flex items-start gap-4">
           <Link
             href={`/learn/${course.id}/${course.lastLessonId || ''}`}
-            className="group shrink-0 w-24 h-24 rounded-lg overflow-hidden relative"
+            className="group shrink-0 w-24 h-24 rounded-xl overflow-hidden relative border border-white/10"
           >
             <CourseIllustration course={course} />
           </Link>
           <div className="flex-1 min-w-0">
             <Link
               href={`/learn/${course.id}/${course.lastLessonId || ''}`}
-              className="hover:text-indigo-600 transition-colors"
+              className="hover:text-[#D8FF00] transition-colors"
             >
-              <h3 className="font-bold text-slate-900 truncate mb-1">{course.title}</h3>
+              <h3 className="font-bold text-white truncate mb-1 text-base">{course.title}</h3>
             </Link>
-            <p className="text-sm text-slate-600 mb-3">{instructorName}</p>
+            <p className="text-xs text-white/60 mb-2.5">{instructorName}</p>
 
             <div className="flex items-center gap-2 mb-1">
-              <ProgressBar value={course.progress || 0} size="sm" />
-              <span className="text-xs font-medium text-slate-600 shrink-0">
-                {course.progress || 0}%
+              <div className="flex-1 bg-white/10 h-2 rounded-full overflow-hidden">
+                <div
+                  className="bg-[#D8FF00] h-full rounded-full shadow-[0_0_8px_#D8FF00]"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
+              <span className="text-xs font-bold text-[#D8FF00] shrink-0">
+                {progressPct}%
               </span>
             </div>
-            <p className="text-xs text-slate-600 mb-4">
+            <p className="text-[11px] text-white/50 mb-3">
               {completed} of {total} lessons complete
             </p>
 
             <Link
               href={`/learn/${course.id}/${course.lastLessonId || ''}`}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#D8FF00] text-black font-bold rounded-full text-xs hover:bg-[#cbf000] shadow-[0_0_12px_rgba(216,255,0,0.25)] transition-all min-h-[38px]"
             >
-              Continue Learning →
+              <span>Continue Learning</span>
+              <ArrowRight className="w-3.5 h-3.5 text-black" />
             </Link>
           </div>
         </div>
@@ -193,32 +204,32 @@ export function CourseCard({ course, variant = 'catalog', onEnroll }: CourseCard
 
   // ── recommended ───────────────────────────────────────────────────────────
   const renderRecommended = () => (
-    <div className="flex gap-4 p-3 bg-white rounded-xl border border-slate-200 hover:border-indigo-200 hover:shadow-sm transition-all group">
+    <div className="flex gap-4 p-3.5 bg-[#0D2232] rounded-2xl border border-white/10 hover:border-[#D8FF00]/40 transition-all group">
       <Link
         href={`/courses/${course.id}`}
-        className="shrink-0 w-20 h-20 rounded-lg overflow-hidden relative"
+        className="shrink-0 w-20 h-20 rounded-xl overflow-hidden relative border border-white/10"
       >
         <CourseIllustration course={course} />
       </Link>
-      <div className="flex flex-col flex-1 py-1">
+      <div className="flex flex-col flex-1 py-0.5">
         <Link
           href={`/courses/${course.id}`}
-          className="hover:text-indigo-600 transition-colors line-clamp-1 font-semibold text-slate-900 mb-1"
+          className="hover:text-[#D8FF00] transition-colors line-clamp-1 font-bold text-white text-sm mb-1"
         >
           {course.title}
         </Link>
-        <div className="flex items-center gap-3 text-xs text-slate-600 mb-2">
+        <div className="flex items-center gap-3 text-xs text-white/60 mb-2">
           <div className="flex items-center gap-1">
             <Star className="w-3 h-3 text-amber-400 fill-amber-400" aria-hidden="true" />
-            <span className="font-medium text-slate-700">{course.rating}</span>
+            <span className="font-bold text-white">{course.rating}</span>
           </div>
           <span>{course.difficulty}</span>
         </div>
         <div className="mt-auto flex items-center justify-between">
-          <span className="font-bold text-sm text-slate-900">{course.price}</span>
+          <span className="font-extrabold text-sm text-[#D8FF00]">{course.price}</span>
           <button
             onClick={() => onEnroll && onEnroll(course.id)}
-            className="text-xs font-medium text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-md transition-colors min-h-[44px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
+            className="text-xs font-bold text-black bg-[#D8FF00] hover:bg-[#cbf000] px-3.5 py-1.5 rounded-full transition-all shadow-[0_0_10px_rgba(216,255,0,0.25)]"
           >
             Enroll
           </button>

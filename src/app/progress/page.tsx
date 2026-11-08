@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { CheckCircle, Award, Star, Flame, Moon } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { CheckCircle, Award, Star, Flame, Moon, ArrowRight } from 'lucide-react';
+import { useApp } from '@/context/AppContext';
 
 const achievements = [
   { id: 1, title: 'First Steps', description: 'Complete your first lesson', earnedDate: '2026-08-15', icon: CheckCircle, earned: true },
@@ -24,86 +25,88 @@ const weeklyActivity = [
   { day: 'Sun', lessons: 0 },
 ];
 
-const courses = [
-  { id: 'c1', name: 'HCI', progress: 72, colorClass: 'bg-indigo-500', textClass: 'text-indigo-500' },
-  { id: 'c2', name: 'Web Dev', progress: 45, colorClass: 'bg-blue-500', textClass: 'text-blue-500' },
-  { id: 'c3', name: 'Cybersecurity', progress: 28, colorClass: 'bg-amber-500', textClass: 'text-amber-500' },
-];
-
 export default function ProgressPage() {
   const router = useRouter();
+  const { enrolledCourses } = useApp();
 
   const handleContinue = (courseId: string) => {
     router.push(`/courses/${courseId}`);
   };
-  const overallProgress = 72;
+
+  const coursesList = enrolledCourses && enrolledCourses.length > 0 ? enrolledCourses : [
+    { id: 'c1', title: 'Human-Computer Interaction (HCI)', progress: 72 },
+    { id: 'c2', title: 'Web Development Fundamentals', progress: 45 },
+    { id: 'c3', title: 'Cybersecurity Fundamentals', progress: 28 },
+  ];
+
+  const overallProgress = 68;
   const radius = 60;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (overallProgress / 100) * circumference;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#081726] text-white flex flex-col font-sans selection:bg-[#D8FF00] selection:text-black">
       <Navbar />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">My Progress</h1>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 flex-1 w-full">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Learning <span className="text-[#D8FF00]">Progress</span>
+          </h1>
+          <p className="text-white/60 mt-1.5 text-sm sm:text-base">
+            Analytics, study velocity, course milestones, and earned certificates.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* Overall Progress */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Overall completion</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Overall Progress Gauge */}
+          <div className="bg-[#0D2232] p-8 rounded-3xl border border-white/10 shadow-2xl flex flex-col items-center justify-center text-center">
+            <span className="text-xs font-semibold uppercase tracking-wider text-white/50 mb-6">Overall Completion</span>
             <div className="relative flex items-center justify-center w-40 h-40">
               <svg className="transform -rotate-90 w-40 h-40">
                 <circle
                   cx="80"
                   cy="80"
                   r={radius}
-                  stroke="currentColor"
+                  stroke="rgba(255,255,255,0.1)"
                   strokeWidth="12"
                   fill="transparent"
-                  className="text-gray-200"
                 />
                 <circle
                   cx="80"
                   cy="80"
                   r={radius}
-                  stroke="currentColor"
+                  stroke="#D8FF00"
                   strokeWidth="12"
                   fill="transparent"
                   strokeDasharray={circumference}
                   strokeDashoffset={strokeDashoffset}
                   strokeLinecap="round"
-                  className="text-indigo-600 transition-all duration-1000 ease-out"
+                  className="transition-all duration-1000 ease-out drop-shadow-[0_0_10px_#D8FF00]"
                 />
               </svg>
               <div className="absolute flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-gray-900">{overallProgress}%</span>
+                <span className="text-4xl font-black text-white tracking-tight">{overallProgress}%</span>
+                <span className="text-[10px] text-[#D8FF00] font-bold uppercase tracking-wider mt-0.5">On Track</span>
               </div>
             </div>
+            <p className="text-xs text-white/50 mt-6">Based on completed course modules</p>
           </div>
 
           {/* Course Progress */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Course Progress</h2>
+          <div className="bg-[#0D2232] p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl lg:col-span-2 flex flex-col justify-between">
+            <h2 className="text-base font-bold text-white mb-6">Enrolled Course Velocity</h2>
             <div className="space-y-6">
-              {courses.map((course) => (
-                <div key={course.id}>
+              {coursesList.map((course: any) => (
+                <div key={course.id || course.courseId}>
                   <div className="flex justify-between items-center mb-2">
-                    <div className="flex items-center space-x-2">
-                      <div className={`w-3 h-3 rounded-full ${course.colorClass}`}></div>
-                      <span className="font-medium text-gray-800">{course.name}</span>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <span className="text-sm font-medium text-gray-500">{course.progress}% complete</span>
-                      <button onClick={() => handleContinue(course.id)} className={`text-sm font-medium hover:underline ${course.textClass}`}>
-                        → Continue
-                      </button>
-                    </div>
+                    <span className="font-bold text-sm text-white">{course.title || course.name}</span>
+                    <span className="text-sm font-black text-[#D8FF00]">{course.progress || 0}%</span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className={`h-2.5 rounded-full ${course.colorClass}`}
-                      style={{ width: `${course.progress}%` }}
-                    ></div>
+                  <div className="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
+                    <div 
+                      className="bg-[#D8FF00] h-full rounded-full shadow-[0_0_8px_#D8FF00] transition-all duration-500"
+                      style={{ width: `${course.progress || 0}%` }}
+                    />
                   </div>
                 </div>
               ))}
@@ -111,57 +114,53 @@ export default function ProgressPage() {
           </div>
         </div>
 
-        {/* Learning Activity */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Lessons completed</h3>
-            <p className="text-3xl font-bold text-gray-900">24</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Quizzes completed</h3>
-            <p className="text-3xl font-bold text-gray-900">1</p>
-          </div>
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Assignments submitted</h3>
-            <p className="text-3xl font-bold text-gray-900">5</p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          {/* Weekly activity chart */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Weekly Activity</h2>
-            <div className="h-64">
+        {/* Weekly Activity & Achievements */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Weekly Activity Chart */}
+          <div className="bg-[#0D2232] p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl">
+            <h2 className="text-base font-bold text-white mb-6">Weekly Lesson Activity</h2>
+            <div className="h-56 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={weeklyActivity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
-                  <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#6B7280', fontSize: 12 }} />
-                  <Tooltip cursor={{ fill: '#F3F4F6' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                  <Bar dataKey="lessons" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                <BarChart data={weeklyActivity}>
+                  <XAxis dataKey="day" stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} />
+                  <YAxis stroke="rgba(255,255,255,0.4)" fontSize={12} tickLine={false} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#102C40', borderColor: 'rgba(255,255,255,0.15)', borderRadius: '12px', color: '#fff' }}
+                    itemStyle={{ color: '#D8FF00' }}
+                  />
+                  <Bar dataKey="lessons" fill="#D8FF00" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
 
           {/* Achievements */}
-          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">Achievements</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {achievements.map((ach) => {
-                const Icon = ach.icon;
+          <div className="bg-[#0D2232] p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl">
+            <h2 className="text-base font-bold text-white mb-6">Earned Achievements</h2>
+            <div className="space-y-3">
+              {achievements.map((item) => {
+                const Icon = item.icon;
                 return (
-                  <div key={ach.id} className={`flex items-start p-3 rounded-lg border ${ach.earned ? 'border-indigo-100 bg-indigo-50/50' : 'border-gray-100 bg-gray-50 opacity-70'}`}>
-                    <div className={`p-2 rounded-full mr-3 shrink-0 ${ach.earned ? 'bg-indigo-100 text-indigo-600 ring-2 ring-indigo-200 ring-offset-1' : 'bg-gray-200 text-gray-400'}`}>
-                      <Icon size={20} />
+                  <div 
+                    key={item.id}
+                    className={`flex items-center gap-4 p-3.5 rounded-2xl border transition-all ${
+                      item.earned 
+                        ? 'bg-[#081726]/60 border-[#D8FF00]/30 text-white' 
+                        : 'bg-[#081726]/30 border-white/5 text-white/40 opacity-50'
+                    }`}
+                  >
+                    <div className={`p-2 rounded-xl ${item.earned ? 'bg-[#D8FF00] text-black shadow-[0_0_10px_#D8FF00]' : 'bg-white/10 text-white/40'}`}>
+                      <Icon size={18} />
                     </div>
-                    <div>
-                      <h4 className={`font-semibold text-sm ${ach.earned ? 'text-gray-900' : 'text-gray-500'}`}>{ach.title}</h4>
-                      <p className="text-xs text-gray-500 mt-0.5">{ach.description}</p>
-                      <p className="text-xs font-medium mt-1 text-gray-400">
-                        {ach.earned ? `Earned: ${ach.earnedDate}` : 'Not yet earned'}
-                      </p>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs font-bold text-white">{item.title}</h4>
+                      <p className="text-[11px] text-white/50">{item.description}</p>
                     </div>
+                    {item.earned && (
+                      <span className="text-[10px] font-bold text-[#D8FF00] bg-[#D8FF00]/15 px-2.5 py-0.5 rounded-full border border-[#D8FF00]/30">
+                        Earned
+                      </span>
+                    )}
                   </div>
                 );
               })}

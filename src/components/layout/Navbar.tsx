@@ -1,10 +1,14 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
+  Home,
+  Play,
   BookOpen,
+  CheckSquare,
+  Calendar,
   Search,
   Bell,
   Menu,
@@ -12,6 +16,7 @@ import {
   User,
   Settings,
   LogOut,
+  LayoutDashboard,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
@@ -23,14 +28,14 @@ export function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
-  const { unreadNotificationsCount } = useApp();
+  const { unreadNotificationsCount, currentUser } = useApp();
 
   const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Courses", href: "/courses" },
-    { name: "My Learning", href: "/my-learning" },
-    { name: "Assignments", href: "/assignments" },
-    { name: "Calendar", href: "/calendar" },
+    { name: "Home", href: "/", icon: Home },
+    { name: "Courses", href: "/courses", icon: Play },
+    { name: "My Learning", href: "/my-learning", icon: BookOpen },
+    { name: "Assignments", href: "/assignments", icon: CheckSquare },
+    { name: "Calendar", href: "/calendar", icon: Calendar },
   ];
 
   const handleSearch = (e: React.FormEvent) => {
@@ -42,201 +47,202 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-white border-b border-slate-200 shadow-sm">
+    <nav className="sticky top-0 z-50 w-full bg-[#081726]/90 backdrop-blur-xl border-b border-white/10 shadow-lg text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <BookOpen className="h-8 w-8 text-indigo-600" />
-              <span className="text-xl font-bold text-indigo-900 hidden sm:block">
-                LearnEase
+        <div className="flex justify-between items-center h-16 sm:h-20 gap-4">
+          
+          {/* Logo */}
+          <div className="flex items-center gap-8 shrink-0">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              {/* 3x3 Dot Grid in Electric Lime */}
+              <div className="grid grid-cols-3 gap-1 w-5 h-5 items-center justify-center p-0.5">
+                {[...Array(9)].map((_, i) => (
+                  <span
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full bg-[#D8FF00] group-hover:scale-110 transition-transform shadow-[0_0_6px_#D8FF00]"
+                  />
+                ))}
+              </div>
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-white group-hover:text-white/95">
+                Learn<span className="text-white">Ease</span>
               </span>
             </Link>
-            
-            <div className="hidden md:ml-8 md:flex md:space-x-4">
+
+            {/* Desktop Navigation Pills */}
+            <div className="hidden lg:flex items-center space-x-1.5">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const Icon = link.icon;
+                const isActive = pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href));
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 rounded-sm ${
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                       isActive
-                        ? "border-indigo-500 text-indigo-600"
-                        : "border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-800"
+                        ? "bg-[#D8FF00] text-black shadow-[0_0_15px_rgba(216,255,0,0.35)] scale-[1.02]"
+                        : "text-white/80 hover:text-white hover:bg-white/10"
                     }`}
                   >
-                    {link.name}
+                    <Icon className={`w-4 h-4 ${isActive ? 'text-black fill-current' : 'text-white/70'}`} />
+                    <span>{link.name}</span>
                   </Link>
                 );
               })}
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden md:block flex-1 max-w-md w-full ml-4">
+          {/* Right Controls: Search, Notifications, Avatar */}
+          <div className="flex items-center gap-3">
+            
+            {/* Search Bar Desktop */}
+            <div className="hidden md:block w-48 lg:w-64">
               <form onSubmit={handleSearch} className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-slate-400" />
-                </div>
+                <Search className="w-4 h-4 text-white/50 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-md leading-5 bg-slate-50 text-gray-900 placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   placeholder="Search courses..."
+                  className="w-full pl-9 pr-4 py-2 bg-[#102C40]/80 border border-white/10 rounded-full text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#D8FF00] focus:ring-1 focus:ring-[#D8FF00] transition-all"
                 />
               </form>
             </div>
 
-            <div className="md:hidden flex items-center">
+            {/* Mobile Search Button */}
+            <button
+              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+              className="md:hidden p-2 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              aria-label="Search"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+
+            {/* Notification Bell */}
+            <Link
+              href="/notifications"
+              className="relative p-2.5 rounded-full bg-[#102C40]/80 border border-white/10 text-white/80 hover:text-white hover:border-[#D8FF00]/40 hover:bg-[#13354c] transition-all"
+              aria-label="Notifications"
+            >
+              <Bell className="w-4 h-4" />
+              {unreadNotificationsCount > 0 && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#D8FF00] shadow-[0_0_8px_#D8FF00]" />
+              )}
+            </Link>
+
+            {/* Profile Menu Dropdown */}
+            <div className="relative">
               <button
-                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-                className="p-2 text-slate-400 hover:text-slate-500"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className="flex items-center gap-2 p-1 rounded-full border border-white/10 hover:border-[#D8FF00]/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#D8FF00]"
+                aria-expanded={isProfileOpen}
+                aria-haspopup="true"
               >
-                <Search className="h-6 w-6" />
+                <img
+                  src={currentUser?.avatar || "https://i.pravatar.cc/150?u=alex"}
+                  alt={currentUser?.name || "User Avatar"}
+                  className="w-8 h-8 rounded-full object-cover ring-1 ring-[#D8FF00]/40"
+                />
               </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-3 w-56 rounded-2xl bg-[#0D2434] border border-white/10 shadow-2xl py-2 z-50 text-white animate-fade-in-up">
+                  <div className="px-4 py-3 border-b border-white/10">
+                    <p className="text-sm font-bold text-white">{currentUser?.name || "Alex Johnson"}</p>
+                    <p className="text-xs text-white/60 truncate">{currentUser?.email || "alex.johnson@university.edu"}</p>
+                  </div>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/80 hover:text-black hover:bg-[#D8FF00] font-medium transition-colors"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/profile"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/80 hover:text-black hover:bg-[#D8FF00] font-medium transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    Student Profile
+                  </Link>
+                  <Link
+                    href="/settings"
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/80 hover:text-black hover:bg-[#D8FF00] font-medium transition-colors"
+                  >
+                    <Settings className="w-4 h-4" />
+                    Settings
+                  </Link>
+                  <div className="border-t border-white/10 my-1"></div>
+                  <button
+                    onClick={() => {
+                      setIsProfileOpen(false);
+                      router.push("/login");
+                    }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-rose-400 hover:text-rose-300 hover:bg-white/5 transition-colors text-left"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center gap-2">
-              <Link href="/notifications" className="relative p-2 text-slate-400 hover:text-slate-500 rounded-full hover:bg-slate-100">
-                <Bell className="h-6 w-6" />
-                {unreadNotificationsCount > 0 && (
-                  <span className="absolute top-1 right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
-                    {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
-                  </span>
-                )}
-              </Link>
-
-              <div className="relative hidden sm:block">
-                <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-slate-300 transition duration-150 ease-in-out"
-                >
-                  <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">
-                    JD
-                  </div>
-                </button>
-
-                {isProfileOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
-                    <Link
-                      href="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <User className="h-4 w-4 mr-2" /> Profile
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <Settings className="h-4 w-4 mr-2" /> Settings
-                    </Link>
-                    <button
-                      className="flex w-full items-center px-4 py-2 text-sm text-slate-700 hover:bg-slate-100"
-                      onClick={() => { setIsProfileOpen(false); router.push('/login'); }}
-                    >
-                      <LogOut className="h-4 w-4 mr-2" /> Sign Out
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center md:hidden">
+            {/* Mobile Menu Button */}
+            <div className="lg:hidden flex items-center">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none focus:bg-slate-100 focus:text-slate-500 transition duration-150 ease-in-out"
+                className="p-2 rounded-full text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Toggle navigation menu"
               >
-                {isMobileMenuOpen ? (
-                  <X className="block h-6 w-6" />
-                ) : (
-                  <Menu className="block h-6 w-6" />
-                )}
+                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Mobile Search Input Drawer */}
       {isMobileSearchOpen && (
-        <div className="md:hidden px-4 pt-2 pb-4 border-b border-slate-200">
+        <div className="md:hidden px-4 py-3 bg-[#0D2434] border-b border-white/10">
           <form onSubmit={handleSearch} className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-slate-400" />
-            </div>
+            <Search className="w-4 h-4 text-white/50 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-md leading-5 bg-white text-gray-900 placeholder-slate-500 focus:outline-none focus:placeholder-slate-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              placeholder="Search courses..."
+              placeholder="Search courses, lessons..."
+              className="w-full pl-9 pr-4 py-2 bg-[#102C40] border border-white/10 rounded-full text-sm text-white placeholder-white/40 focus:outline-none focus:border-[#D8FF00]"
               autoFocus
             />
           </form>
         </div>
       )}
 
+      {/* Mobile Menu Drawer */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-b border-slate-200 bg-white">
-          <div className="pt-2 pb-3 space-y-1">
-            {navLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`block pl-3 pr-4 py-3 border-l-4 text-base font-medium min-h-[44px] flex items-center ${
-                    isActive
-                      ? "border-indigo-500 text-indigo-700 bg-indigo-50"
-                      : "border-transparent text-slate-600 hover:text-slate-800 hover:bg-slate-50 hover:border-slate-300"
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
-          </div>
-          <div className="pt-4 pb-3 border-t border-slate-200">
-            <div className="flex items-center px-4">
-              <div className="flex-shrink-0">
-                <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-lg">
-                  JD
-                </div>
-              </div>
-              <div className="ml-3">
-                <div className="text-base font-medium text-slate-800">John Doe</div>
-                <div className="text-sm font-medium text-slate-500">john@example.com</div>
-              </div>
-            </div>
-            <div className="mt-3 space-y-1">
+        <div className="lg:hidden bg-[#0A1926]/98 border-b border-white/10 px-4 pt-3 pb-6 space-y-2">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive = pathname === link.href || (link.href !== '/' && pathname?.startsWith(link.href));
+            return (
               <Link
-                href="/profile"
-                className="block px-4 py-2 text-base font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                key={link.name}
+                href={link.href}
                 onClick={() => setIsMobileMenuOpen(false)}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-semibold transition-all ${
+                  isActive
+                    ? "bg-[#D8FF00] text-black shadow-[0_0_12px_rgba(216,255,0,0.3)]"
+                    : "text-white/80 hover:text-white hover:bg-white/10"
+                }`}
               >
-                Profile
+                <Icon className={`w-5 h-5 ${isActive ? 'text-black' : 'text-white/70'}`} />
+                <span>{link.name}</span>
               </Link>
-              <Link
-                href="/settings"
-                className="block px-4 py-2 text-base font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Settings
-              </Link>
-              <button
-                className="block w-full text-left px-4 py-2 text-base font-medium text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-                onClick={() => { setIsMobileMenuOpen(false); router.push('/login'); }}
-              >
-                Sign Out
-              </button>
-            </div>
-          </div>
+            );
+          })}
         </div>
       )}
     </nav>
