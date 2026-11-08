@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Navbar } from '@/components/layout/Navbar';
 import { Layers, Map, TrendingUp, Bell, Upload, Star } from 'lucide-react';
+import { withBasePath } from '@/lib/basePath';
 
 const courses = [
   { id: 1, title: 'Introduction to Computer Science', instructor: 'Dr. Alan Turing', category: 'Computer Science', students: 1240, rating: 4.8, price: '$49', color: 'bg-gradient-to-br from-indigo-500 to-purple-600', image: '' },
@@ -131,7 +132,7 @@ export default function LandingPage() {
             <Link key={course.id} href="/courses" className="bg-white border border-slate-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow duration-300 block">
               <div className={`h-40 ${course.color || 'bg-slate-100'} relative overflow-hidden flex items-center justify-center`}>
                 {course.image ? (
-                  <img src={course.image} alt={course.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img src={withBasePath(course.image)} alt={course.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 ) : (
                   <div className="text-4xl">📚</div>
                 )}
@@ -238,4 +239,3 @@ export default function LandingPage() {
     </div>
   );
 }
-

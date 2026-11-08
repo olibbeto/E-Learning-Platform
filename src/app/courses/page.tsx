@@ -5,6 +5,43 @@ import Link from 'next/link';
 import { Search, SlidersHorizontal, BookOpen, Star, Clock, User, CheckCircle } from 'lucide-react';
 import { Navbar } from '@/components/layout/Navbar';
 import { useApp } from '@/context/AppContext';
+import { withBasePath } from '@/lib/basePath';
+
+const courseAltText: Record<string, string> = {
+  c1: 'Illustration of a wireframe interface with a cursor and user icon',
+  c2: 'Illustration of a code editor and browser window with HTML tags',
+  c3: 'Illustration of a shield with a padlock over a security network',
+  c4: 'Illustration of a circular sprint diagram next to a kanban board',
+  c5: 'Illustration of a router connected to a laptop, server and phone',
+  c6: 'Illustration of stacked database cylinders connected to a data table',
+  c7: 'Illustration of a phone wireframe next to a layout grid with color swatches',
+  c8: 'Illustration of a terminal window with a cursor and curly-brace symbol',
+};
+
+function CourseCardImage({ course }: { course: any }) {
+  const [imgError, setImgError] = useState(false);
+  const src = withBasePath(course.image);
+  const alt = courseAltText[course.id] ?? `${course.title} course illustration`;
+  const showImage = !!course.image && !imgError;
+
+  if (showImage) {
+    return (
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        onError={() => setImgError(true)}
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="flex items-center justify-center w-full h-full" aria-hidden="true">
+      <BookOpen className="w-16 h-16 text-white/30" />
+    </div>
+  );
+}
 
 export default function CoursesPage() {
   const { allCourses, enrollInCourse, enrolledCourses } = useApp();
@@ -114,13 +151,10 @@ export default function CoursesPage() {
               const isEnrolled = enrolledCourses?.some((ec: any) => ec.courseId === course.id);
               return (
                 <div key={course.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-shadow flex flex-col">
-                  <div className={`h-40 ${course.color || 'bg-gradient-to-br from-indigo-500 to-purple-600'} flex items-center justify-center p-6 relative overflow-hidden`}>
-                    {course.image ? (
-                      <img src={course.image} alt={course.title} className="absolute inset-0 w-full h-full object-cover" />
-                    ) : (
-                      <BookOpen className="w-16 h-16 text-white/30" />
-                    )}
-                    <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full text-gray-800 text-xs font-bold shadow-sm z-10">
+                  {/* Image container with 3:2 aspect ratio */}
+                  <div className={`relative aspect-[3/2] ${course.color || 'bg-gradient-to-br from-indigo-500 to-purple-600'} flex items-center justify-center overflow-hidden`}>
+                    <CourseCardImage course={course} />
+                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-md text-gray-800 text-xs font-bold shadow-sm z-10">
                       {course.category}
                     </div>
                   </div>
@@ -196,4 +230,3 @@ export default function CoursesPage() {
     </div>
   );
 }
-

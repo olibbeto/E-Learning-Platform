@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
 import Link from 'next/link';
 import { Search as SearchIcon, Book, PlayCircle, FileEdit, Clock, ChevronRight } from 'lucide-react';
+import { withBasePath } from '@/lib/basePath';
 
 // Mocked data for search
 const mockCourses = [
@@ -181,7 +182,7 @@ function SearchPageContent() {
                   {filteredCourses.map(course => (
                     <Link href={`/courses/${course.id}`} key={course.id} className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-shadow group">
                       <div className="h-48 bg-gray-200 relative overflow-hidden">
-                        <img src={course.image} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src={withBasePath(course.image)} alt={course.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         <div className="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded text-xs font-semibold text-gray-800">
                           {highlightText(course.category, query)}
                         </div>

@@ -18,6 +18,7 @@
  * Rules:
  *   - Absolute URLs (http/https/protocol-relative) are returned unchanged.
  *   - Empty strings are returned unchanged.
+ *   - If already prefixed with BASE, returns path as-is.
  *   - A leading slash is added to `path` if it is missing.
  */
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
@@ -25,6 +26,7 @@ const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 export function withBasePath(path: string): string {
   if (!path) return '';
   if (path.startsWith('http') || path.startsWith('//')) return path;
+  if (BASE && (path === BASE || path.startsWith(`${BASE}/`))) return path;
   const normalised = path.startsWith('/') ? path : `/${path}`;
   return `${BASE}${normalised}`;
 }
