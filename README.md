@@ -22,7 +22,7 @@
 
 <br />
 
-🌐 **[Live Demo](https://olibbeto.github.io/E-Learning-Platform---HCI-Usability-Evaluation/)** &nbsp;|&nbsp; 📂 **[Source Code](https://github.com/olibbeto/E-Learning-Platform---HCI-Usability-Evaluation)**
+🌐 **[Live Demo](https://olibbeto.github.io/E-Learning-Platform/)** &nbsp;|&nbsp; 📂 **[Source Code](https://github.com/olibbeto/E-Learning-Platform)**
 
 <br />
 
@@ -106,10 +106,10 @@ Built as a **Human-Computer Interaction (HCI) university assignment**, every des
 
 ```bash
 # Clone the repository
-git clone https://github.com/olibbeto/E-Learning-Platform---HCI-Usability-Evaluation.git
+git clone https://github.com/olibbeto/E-Learning-Platform.git
 
 # Navigate into the project
-cd E-Learning-Platform---HCI-Usability-Evaluation
+cd E-Learning-Platform
 
 # Install dependencies
 npm install
