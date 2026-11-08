@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
-const repo = "E-Learning-Platform---HCI-Usability-Evaluation";
+// Auto-detect repository name from GitHub Actions environment, falling back to new repo name
+const repo = process.env.GITHUB_REPOSITORY?.split("/")[1] || "E-Learning-Platform";
 const basePath = process.env.NODE_ENV === "production" ? `/${repo}` : "";
 
 const nextConfig: NextConfig = {
@@ -13,7 +14,6 @@ const nextConfig: NextConfig = {
   },
   trailingSlash: true,        // Ensures /dashboard → /dashboard/index.html
   // Bake the base path into every client bundle at build time.
-  // NEXT_PUBLIC_* vars are inlined by the compiler — no runtime look-up needed.
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
   },
