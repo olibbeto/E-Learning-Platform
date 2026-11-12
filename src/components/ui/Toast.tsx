@@ -45,7 +45,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+      <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 flex flex-col gap-2 sm:max-w-sm">
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} onDismiss={() => removeToast(toast.id)} />
         ))}
@@ -79,7 +79,7 @@ function ToastItem({ toast, onDismiss }: { toast: ToastMessage; onDismiss: () =>
   return (
     <div
       className={cn(
-        "flex items-center gap-3 px-4 py-3 min-w-[300px] rounded-lg border shadow-lg transition-all duration-300 ease-in-out transform",
+        "flex items-center gap-3 px-4 py-3 w-full sm:min-w-[300px] rounded-lg border shadow-lg transition-all duration-300 ease-in-out transform",
         backgrounds[toast.type],
         isShowing ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
       )}

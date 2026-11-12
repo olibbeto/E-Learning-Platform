@@ -175,12 +175,12 @@ export default function LandingPage() {
         {/* ========================================================================= */}
         {/* HERO SECTION                                                             */}
         {/* ========================================================================= */}
-        <section className="relative pt-8 sm:pt-14 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center">
+        <section className="relative pt-8 sm:pt-12 lg:pt-14 pb-10 sm:pb-16 lg:pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mx-auto w-full">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-6 lg:gap-4 items-center">
             
             {/* Left Column: Headlines & Call to Actions */}
-            <div className="lg:col-span-5 text-center lg:text-left space-y-6 z-10">
-              <h1 className="text-4xl sm:text-5xl lg:text-[4rem] font-black tracking-tight leading-[1.06] text-white">
+            <div className="md:col-span-6 lg:col-span-5 text-center md:text-left space-y-5 sm:space-y-6 z-10">
+              <h1 className="text-[2.15rem] sm:text-5xl lg:text-[3.15rem] xl:text-[4rem] 2xl:text-[4.35rem] font-black tracking-tight leading-[1.08] text-white">
                 Learn smarter. <br />
                 <span className="text-[#D8FF00] drop-shadow-[0_0_25px_rgba(216,255,0,0.45)]">
                   Navigate
@@ -188,11 +188,11 @@ export default function LandingPage() {
                 easier.
               </h1>
 
-              <p className="text-base sm:text-lg text-white/75 max-w-md mx-auto lg:mx-0 leading-relaxed font-normal">
+              <p className="text-sm sm:text-base lg:text-lg text-white/75 max-w-md mx-auto md:mx-0 leading-relaxed font-normal">
                 Build new skills, achieve your goals, and take control of your learning journey.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 sm:gap-4 pt-2">
                 <Link
                   href="/courses"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full text-base font-extrabold bg-[#D8FF00] text-black hover:bg-[#cbf000] shadow-[0_0_25px_rgba(216,255,0,0.4)] transition-all duration-200 transform hover:scale-[1.03] active:scale-[0.98]"
@@ -212,8 +212,8 @@ export default function LandingPage() {
             </div>
 
             {/* Center Visual: Student Studying with Laptop (SEAMLESS NO-BORDER INTEGRATION) */}
-            <div className="lg:col-span-4 relative flex justify-center items-center py-4 lg:py-0">
-              <div className="relative w-full max-w-[420px] aspect-square flex items-center justify-center">
+            <div className="md:col-span-6 lg:col-span-3 xl:col-span-4 relative flex justify-center items-center py-2 md:py-0">
+              <div className="relative w-full max-w-[270px] sm:max-w-[340px] lg:max-w-[380px] xl:max-w-[420px] 2xl:max-w-[460px] aspect-square flex items-center justify-center">
                 {/* Backlight halo glow specifically centered behind student */}
                 <div 
                   className="absolute inset-0 rounded-full blur-[80px] opacity-50 -z-10"
@@ -230,8 +230,8 @@ export default function LandingPage() {
             </div>
 
             {/* Right Column: Floating Learning Progress Card */}
-            <div className="lg:col-span-3 flex justify-center lg:justify-end z-10">
-              <div className="w-full max-w-[310px] rounded-3xl bg-[#081827]/85 backdrop-blur-2xl border border-white/15 p-6 shadow-[0_25px_60px_rgba(0,0,0,0.6)] space-y-5 hover:border-white/25 transition-all">
+            <div className="md:col-span-12 lg:col-span-4 xl:col-span-3 flex justify-center lg:justify-end z-10">
+              <div className="w-full max-w-[340px] md:max-w-[380px] lg:max-w-[310px] rounded-3xl bg-[#081827]/85 backdrop-blur-2xl border border-white/15 p-5 sm:p-6 shadow-[0_25px_60px_rgba(0,0,0,0.6)] space-y-5 hover:border-white/25 transition-all">
                 
                 {/* Header */}
                 <div className="flex items-center justify-between">
@@ -289,14 +289,14 @@ export default function LandingPage() {
         {/* ========================================================================= */}
         {/* CONTINUE LEARNING BANNER                                                 */}
         {/* ========================================================================= */}
-        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-16">
-          <div className="relative rounded-3xl bg-[#081827]/90 backdrop-blur-2xl border border-white/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden group hover:border-[#D8FF00]/40 transition-all">
+        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mx-auto w-full mb-12 sm:mb-16">
+          <div className="relative rounded-3xl bg-[#081827]/90 backdrop-blur-2xl border border-white/15 p-4 sm:p-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 overflow-hidden group hover:border-[#D8FF00]/40 transition-all">
             
             {/* Left section: Circular Lime Play button + Title */}
-            <div className="flex items-center gap-4 w-full md:w-auto">
+            <div className="flex items-center gap-3.5 sm:gap-4 w-full md:w-auto">
               <Link
                 href={activeCourse ? `/learn/${activeCourse.id}/${activeCourse.lastLessonId || 'l1'}` : '/learn/c2/l2_web'}
-                className="w-12 h-12 rounded-full bg-[#D8FF00] text-black flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(216,255,0,0.5)] hover:scale-105 active:scale-95 transition-transform"
+                className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-[#D8FF00] text-black flex items-center justify-center shrink-0 shadow-[0_0_20px_rgba(216,255,0,0.5)] hover:scale-105 active:scale-95 transition-transform"
                 aria-label="Continue Learning"
               >
                 <Play className="w-5 h-5 fill-black ml-0.5" />
@@ -308,9 +308,9 @@ export default function LandingPage() {
             </div>
 
             {/* Middle section: Course Thumbnail & Progress Bar */}
-            <div className="flex items-center gap-4 flex-1 max-w-2xl w-full">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 max-w-2xl w-full">
               {/* Thumbnail */}
-              <div className="w-24 h-14 rounded-xl overflow-hidden border border-white/20 shrink-0 relative bg-[#102C40] shadow-md">
+              <div className="w-20 h-12 sm:w-24 sm:h-14 rounded-xl overflow-hidden border border-white/20 shrink-0 relative bg-[#102C40] shadow-md">
                 <img
                   src={withBasePath('/images/continue-learning-thumb.jpg')}
                   alt="Web Development Fundamentals"
@@ -320,8 +320,8 @@ export default function LandingPage() {
 
               {/* Title, Lesson & Progress Bar */}
               <div className="flex-1 space-y-2 min-w-0">
-                <div className="flex justify-between items-center text-xs">
-                  <span className="font-bold text-white truncate pr-2 text-sm">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-0.5 sm:gap-2 text-xs">
+                  <span className="font-bold text-white truncate text-xs sm:text-sm">
                     {activeCourse ? activeCourse.title : 'Web Development Fundamentals'}
                   </span>
                   <span className="text-white/60 text-[11px] shrink-0 font-medium">
@@ -355,7 +355,7 @@ export default function LandingPage() {
         {/* ========================================================================= */}
         {/* EXPLORE COURSES SECTION                                                  */}
         {/* ========================================================================= */}
-        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-20">
+        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mx-auto w-full mb-16 sm:mb-20">
           
           {/* Section Header & Filters */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 mb-8">
@@ -365,26 +365,26 @@ export default function LandingPage() {
             </div>
 
             {/* Filter Pills matching Mockup */}
-            <div className="flex flex-wrap items-center gap-2.5">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 w-full lg:w-auto">
               
               {/* Search input pill */}
-              <div className="relative flex items-center">
+              <div className="relative flex items-center col-span-2 sm:w-52">
                 <Search className="w-3.5 h-3.5 text-white/40 absolute left-3.5 pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search courses..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-2 bg-[#081827] border border-white/15 focus:border-[#D8FF00] rounded-full text-xs text-white placeholder-white/40 outline-none w-44 sm:w-52 transition-colors"
+                  className="w-full pl-9 pr-4 py-2.5 sm:py-2 bg-[#081827] border border-white/15 focus:border-[#D8FF00] rounded-full text-xs text-white placeholder-white/40 outline-none transition-colors"
                 />
               </div>
 
               {/* Category Dropdown Pill - Styled in Electric Lime like Mockup */}
-              <div className="relative">
+              <div className="relative col-span-2 sm:col-span-1">
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="appearance-none pl-4 pr-8 py-2 bg-[#D8FF00] text-black font-extrabold text-xs rounded-full cursor-pointer focus:outline-none shadow-[0_0_15px_rgba(216,255,0,0.3)] transition-all"
+                  className="w-full sm:w-auto appearance-none pl-4 pr-8 py-2.5 sm:py-2 bg-[#D8FF00] text-black font-extrabold text-xs rounded-full cursor-pointer focus:outline-none shadow-[0_0_15px_rgba(216,255,0,0.3)] transition-all"
                 >
                   {categories.map((c) => (
                     <option key={c} value={c} className="bg-[#081827] text-white font-medium">
@@ -400,7 +400,7 @@ export default function LandingPage() {
                 <select
                   value={selectedLevel}
                   onChange={(e) => setSelectedLevel(e.target.value)}
-                  className="appearance-none pl-4 pr-8 py-2 bg-[#081827] border border-white/15 text-white font-medium text-xs rounded-full cursor-pointer focus:outline-none focus:border-[#D8FF00] transition-colors"
+                  className="w-full sm:w-auto appearance-none pl-4 pr-8 py-2.5 sm:py-2 bg-[#081827] border border-white/15 text-white font-medium text-xs rounded-full cursor-pointer focus:outline-none focus:border-[#D8FF00] transition-colors"
                 >
                   {levels.map((l) => (
                     <option key={l} value={l} className="bg-[#081827] text-white">
@@ -416,7 +416,7 @@ export default function LandingPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="appearance-none pl-4 pr-8 py-2 bg-[#081827] border border-white/15 text-white font-medium text-xs rounded-full cursor-pointer focus:outline-none focus:border-[#D8FF00] transition-colors"
+                  className="w-full sm:w-auto appearance-none pl-4 pr-8 py-2.5 sm:py-2 bg-[#081827] border border-white/15 text-white font-medium text-xs rounded-full cursor-pointer focus:outline-none focus:border-[#D8FF00] transition-colors"
                 >
                   {sortOptions.map((s) => (
                     <option key={s} value={s} className="bg-[#081827] text-white">
@@ -518,12 +518,12 @@ export default function LandingPage() {
         {/* ========================================================================= */}
         {/* WHY LEANEASE / HCI HEURISTICS HIGHLIGHTS                                 */}
         {/* ========================================================================= */}
-        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full mb-20">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl 2xl:max-w-[1440px] mx-auto w-full mb-16 sm:mb-20">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
             <span className="text-xs font-bold text-[#D8FF00] uppercase tracking-widest bg-[#D8FF00]/10 px-3 py-1 rounded-full border border-[#D8FF00]/20">
               Why LearnEase
             </span>
-            <h2 className="text-3xl font-black text-white tracking-tight mt-3">
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-3">
               Built on Proven HCI Usability Principles
             </h2>
             <p className="text-xs sm:text-sm text-white/60 mt-2">
@@ -568,9 +568,9 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-white/10 bg-[#040A10] py-8 text-center text-xs text-white/40">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="max-w-7xl 2xl:max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p>© 2026 LearnEase · Usability Evaluation Prototype · Built with Next.js & Tailwind CSS</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
             <Link href="/courses" className="hover:text-white transition-colors">Courses</Link>
             <Link href="/my-learning" className="hover:text-white transition-colors">My Learning</Link>
             <Link href="/assignments" className="hover:text-white transition-colors">Assignments</Link>

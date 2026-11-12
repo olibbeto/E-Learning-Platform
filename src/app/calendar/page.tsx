@@ -130,51 +130,56 @@ export default function CalendarPage() {
             </div>
           </div>
 
-          {/* Grid Header */}
-          <div className="grid grid-cols-7 border-b border-white/10 bg-[#081726]/40">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className="py-2.5 text-center text-xs font-bold text-white/50 uppercase tracking-wider">
-                {day}
+          {/* Calendar Grid Wrapper for Small Screens */}
+          <div className="flex-1 overflow-x-auto flex flex-col">
+            <div className="min-w-[480px] sm:min-w-0 flex-1 flex flex-col">
+              {/* Grid Header */}
+              <div className="grid grid-cols-7 border-b border-white/10 bg-[#081726]/40">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                  <div key={day} className="py-2.5 text-center text-xs font-bold text-white/50 uppercase tracking-wider">
+                    {day}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
 
-          {/* Grid Cells */}
-          <div className="flex-1 grid grid-cols-7 grid-rows-5 bg-white/5 gap-px">
-            {gridDays.map((cell, idx) => (
-              <div 
-                key={idx} 
-                className={`min-h-[110px] bg-[#0D2232] p-2 transition-colors hover:bg-[#112e44] flex flex-col cursor-pointer ${!cell.isCurrentMonth ? 'opacity-30 bg-[#081726]' : ''}`}
-                onClick={() => {
-                  if (cell.events.length > 0) {
-                    setSelectedEvent(cell.events[0]);
-                  }
-                }}
-              >
-                <div className="flex justify-between items-start mb-1">
-                  <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${
-                    cell.isToday 
-                      ? 'bg-[#D8FF00] text-black shadow-[0_0_10px_#D8FF00]' 
-                      : cell.isCurrentMonth ? 'text-white' : 'text-white/40'
-                  }`}>
-                    {cell.day}
-                  </span>
-                </div>
-                
-                <div className="space-y-1 overflow-y-auto max-h-[75px] no-scrollbar">
-                  {cell.events.map(event => (
-                    <div 
-                      key={event.id}
-                      onClick={(e) => handleEventClick(e, event)}
-                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-md truncate border cursor-pointer hover:scale-[1.02] transition-transform ${eventColors[event.type as keyof typeof eventColors]}`}
-                      title={event.title}
-                    >
-                      {event.title}
+              {/* Grid Cells */}
+              <div className="flex-1 grid grid-cols-7 grid-rows-5 bg-white/5 gap-px">
+                {gridDays.map((cell, idx) => (
+                  <div 
+                    key={idx} 
+                    className={`min-h-[82px] sm:min-h-[110px] bg-[#0D2232] p-1.5 sm:p-2 transition-colors hover:bg-[#112e44] flex flex-col cursor-pointer ${!cell.isCurrentMonth ? 'opacity-30 bg-[#081726]' : ''}`}
+                    onClick={() => {
+                      if (cell.events.length > 0) {
+                        setSelectedEvent(cell.events[0]);
+                      }
+                    }}
+                  >
+                    <div className="flex justify-between items-start mb-1">
+                      <span className={`text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ${
+                        cell.isToday 
+                          ? 'bg-[#D8FF00] text-black shadow-[0_0_10px_#D8FF00]' 
+                          : cell.isCurrentMonth ? 'text-white' : 'text-white/40'
+                      }`}>
+                        {cell.day}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    
+                    <div className="space-y-1 overflow-y-auto max-h-[75px] no-scrollbar">
+                      {cell.events.map(event => (
+                        <div 
+                          key={event.id}
+                          onClick={(e) => handleEventClick(e, event)}
+                          className={`text-[11px] font-semibold px-2 py-0.5 rounded-md truncate border cursor-pointer hover:scale-[1.02] transition-transform ${eventColors[event.type as keyof typeof eventColors]}`}
+                          title={event.title}
+                        >
+                          {event.title}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
 

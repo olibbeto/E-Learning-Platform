@@ -48,12 +48,12 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-[#081726]/90 backdrop-blur-xl border-b border-white/10 shadow-lg text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-20 gap-4">
+      <div className="max-w-7xl 2xl:max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 sm:h-20 gap-2 sm:gap-4">
           
           {/* Logo */}
-          <div className="flex items-center gap-8 shrink-0">
-            <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="flex items-center gap-4 xl:gap-8 shrink-0">
+            <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
               {/* 3x3 Dot Grid in Electric Lime */}
               <div className="grid grid-cols-3 gap-1 w-5 h-5 items-center justify-center p-0.5">
                 {[...Array(9)].map((_, i) => (
@@ -63,7 +63,7 @@ export function Navbar() {
                   />
                 ))}
               </div>
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-white group-hover:text-white/95">
+              <span className="text-lg sm:text-2xl font-black tracking-tight text-white group-hover:text-white/95">
                 Learn<span className="text-white">Ease</span>
               </span>
             </Link>
@@ -93,7 +93,7 @@ export function Navbar() {
           </div>
 
           {/* Right Controls: Search, Notifications, Avatar */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             
             {/* Search Bar Desktop */}
             <div className="hidden md:block w-48 lg:w-64">
