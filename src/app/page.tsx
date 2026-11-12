@@ -222,9 +222,9 @@ export default function LandingPage() {
                   }}
                 />
                 <img
-                  src={withBasePath('/images/hero-student.png')}
+                  src={withBasePath('/images/hero-student-real.jpg')}
                   alt="Student studying with laptop and headphones"
-                  className="w-full h-full object-contain filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)] transform scale-105"
+                  className="w-full h-full object-contain [mask-image:radial-gradient(ellipse_at_center,black_58%,transparent_98%)] filter drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)] transform scale-105"
                 />
               </div>
             </div>
